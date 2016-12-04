@@ -8,7 +8,11 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        {% block body %}{% endblock %}
+        {% block body %}
+            {% include 'header.html.twig' %}
+            {% block content %}{% endblock %}
+        {% endblock %}
         {% block javascripts %}{% endblock %}
+        <script src="{{ asset('/js/bootstrap.min.js') }}"></script>
     </body>
 </html>
