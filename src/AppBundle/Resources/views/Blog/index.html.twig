@@ -14,12 +14,14 @@
             <div class="col-lg-3">
                 <img src="{{ post.image }}">
             </div>
+            <a href="{{ path('single_post', {'slug':post.slug }) }}">
+                <h3>
+                    {{ loop.index }}. {{ post.title }}
+                </h3>
+            </a>
 
-            <h3>
-                {{ loop.index }}. {{ post.title }}
-            </h3>
             <span>
-                {{ post.description }}
+                {{ post.content }}
             </span>
         </div>
     {% endfor %}

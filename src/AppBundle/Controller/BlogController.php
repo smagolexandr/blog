@@ -2,11 +2,12 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Post;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
-use Faker;
 
 class BlogController extends Controller
 {
@@ -16,17 +17,8 @@ class BlogController extends Controller
      */
     public function indexAction()
     {
-        $faker = Faker\Factory::create();
-        $posts = [];
-        for ($i=0;$i<10;$i++)
-        {
-            $tmp = [
-                'image' => $faker->imageUrl($width = 640, $height = 480),
-                'title' => $faker->sentence($nbWords = 6, $variableNbWords = true),
-                'description' => $faker-> paragraph($nbSentences = 3, $variableNbSentences = true)
-            ];
-            array_push($posts, $tmp);
-        }
+        $em = $this->getDoctrine()->getManager();
+        $posts = $em->getRepository('AppBundle\Entity\Post')->findAll();
 
         return [
             'posts' => $posts
@@ -34,17 +26,12 @@ class BlogController extends Controller
     }
 
     /**
-     * @Route("/post/1", name="single_post")
+     * @Route("/post/{slug}", name="single_post")
+     * @ParamConverter("post", class="AppBundle:Post", options={"slug" = "slug"})
      * @Template()
      */
-    public function singlePostAction()
+    public function singlePostAction(Post $post, Request $request)
     {
-        $faker = Faker\Factory::create();
-        $post = [
-            'image' => $faker->imageUrl($width = 640, $height = 480),
-            'title' => $faker->sentence($nbWords = 6, $variableNbWords = true),
-            'description' => $faker-> paragraph($nbSentences = 50, $variableNbSentences = true)
-        ];
         return [
             'post' => $post
         ];

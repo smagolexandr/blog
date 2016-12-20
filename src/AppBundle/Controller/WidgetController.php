@@ -12,19 +12,8 @@ class WidgetController extends Controller
      */
     public function lastCommentsAction()
     {
-        $faker = Faker\Factory::create();
-        $comments = [];
-        for ($i=0;$i<5;$i++)
-        {
-            $tmp = [
-                'user' => $faker->lastName,
-                'comment' => $faker->sentence($nbWords = 6, $variableNbWords = true)
-            ];
-            array_push($comments, $tmp);
-        }
-
         return [
-            'comments' => $comments
+
         ];
     }
 }
