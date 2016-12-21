@@ -1,0 +1,35 @@
+#################### USER ########################
+
+AppBundle\Entity\User:
+    user_{1..15}:
+        username (unique): <word(10)>
+        password: <password()>
+        email (unique): <email()>
+
+AppBundle\Entity\Author:
+    author_{1..15}:
+        lastName: <lastName()>
+        firstName: <firstName()>
+        user(unique): '@user*'
+
+#################### BLOG #########################
+
+AppBundle\Entity\Post:
+    blogpost_{1..20}:
+        title (unique): <text(20)>
+        content: <text(1000)>
+        image:  <imageUrl(400, 400)>
+        author: '@author*'
+        comments: ['@blogcomment*']
+        tags: ['@blogtag*']
+
+AppBundle\Entity\Comment:
+    blogcomment_{1..100}:
+        content: <text(200)>
+        author: '@author*'
+        post: '@blogpost*'
+
+AppBundle\Entity\Tag:
+    blogtag_{1..100}:
+        name: <word(10)>_<numberBetween(1, 100000)>
+        post: ['@blogpost*']
