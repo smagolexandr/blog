@@ -17,6 +17,8 @@
 /.idea
 .Ds_Store
 *~
+/node_modules/
+/bower_components/
 /web/css/*
 /web/js/*
 /web/fonts/*

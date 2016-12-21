@@ -16,14 +16,17 @@
             </div>
             <a href="{{ path('single_post', {'slug':post.slug }) }}">
                 <h3>
-                    {{ loop.index }}. {{ post.title }}
+                    {{ post.title }}
                 </h3>
             </a>
 
             <span>
-                {{ post.content }}
+                {{ post.content | slice(0, 250) ~ "..." }}
             </span>
         </div>
     {% endfor %}
+    <ul class="pager">
+        {{ knp_pagination_render(posts) }}
+    </ul>
 {% endblock %}
 

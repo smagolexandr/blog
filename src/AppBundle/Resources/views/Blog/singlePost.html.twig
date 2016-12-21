@@ -8,5 +8,15 @@
     <span>
         {{ post.content }}
     </span>
+    <div>
+        {% for comment in post.comments %}
+            <div>
+                {{ comment.id }} {{ comment.author.lastName }} {{ comment.author.firstName }}
+            </div>
+            <div>
+                {{ comment.content }}
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
 

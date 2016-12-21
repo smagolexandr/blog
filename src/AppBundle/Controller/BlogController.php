@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Author;
 use AppBundle\Entity\Post;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -15,13 +16,16 @@ class BlogController extends Controller
      * @Route("/", name="homepage")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $posts = $em->getRepository('AppBundle\Entity\Post')->findAll();
 
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate($posts, $request->query->getInt('page', 1), 10);
+
         return [
-            'posts' => $posts
+            'posts' => $pagination
         ];
     }
 
