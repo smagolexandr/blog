@@ -23,6 +23,15 @@
             <span>
                 {{ post.content | slice(0, 250) ~ "..." }}
             </span>
+            <div>
+                <a href="{{ path('blog_post_edit', {'post':post.id}) }}" class="btn btn-xs">edit</a>
+                <button class="btn btn-xs btn-danger hidden">
+                        {{ form_start(deleteForm[post.id],
+                        {attr : {onsubmit: 'return confirm("Вы действительно хотите удалить пост?");' }}) }}
+                        {{ form_widget(deleteForm[post.id].submit, {'label':'delete'}) }}
+                        {{ form_end(deleteForm[post.id]) }}
+                </button>
+            </div>
         </div>
     {% endfor %}
     <ul class="pager">

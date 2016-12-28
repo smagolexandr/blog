@@ -1,0 +1,14 @@
+{% extends 'AppBundle:Blog:layout.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        img{
+            width: 100%;
+        }
+    </style>
+{% endblock %}
+
+{% block main_column %}
+    {{ form_start(form) }}
+    {{ form_end(form) }}
+{% endblock %}
