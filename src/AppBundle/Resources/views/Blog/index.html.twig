@@ -9,29 +9,34 @@
 {% endblock %}
 
 {% block main_column %}
-    {% for post in posts %}
-        <div class="col-lg-12">
-            <div class="col-lg-3">
-                <img src="{{ post.image }}">
-            </div>
-            <a href="{{ path('single_post', {'slug':post.slug }) }}">
-                <h3>
-                    {{ post.title }}
-                </h3>
-            </a>
 
-            <span>
-                {{ post.content | slice(0, 250) ~ "..." }}
-            </span>
-            <div>
-                <a href="{{ path('blog_post_edit', {'post':post.id}) }}" class="btn btn-xs">edit</a>
-                <button class="btn btn-xs btn-danger hidden">
+    {% for post in posts %}
+
+        <div class="col-md-12 blogShort" style=" padding-bottom: 10px">
+            <h1>{{ post.title }}
+                    <span style="float:right;">
+                        <a href="{{ path('blog_post_edit', {'post':post.id}) }}" class="btn btn-xs">edit</a>
+                        <button class="btn btn-xs btn-danger hidden">
                         {{ form_start(deleteForm[post.id],
                         {attr : {onsubmit: 'return confirm("Вы действительно хотите удалить пост?");' }}) }}
-                        {{ form_widget(deleteForm[post.id].submit, {'label':'delete'}) }}
-                        {{ form_end(deleteForm[post.id]) }}
-                </button>
-            </div>
+                            {{ form_widget(deleteForm[post.id].submit, {'label':'delete'}) }}
+                            {{ form_end(deleteForm[post.id]) }}
+                        </button>
+                    </span>
+            </h1>
+            <hr>
+            {% if post.image %}
+            <img class="col-sm-3 col-xs-12" src="{{ post.image }}">
+            {% endif %}
+            <article style="font-size: 1.3em;text-align: justify;"><p>
+                    {% if post.content|length > 349 %}
+                        {{ post.content | slice(0, 350) ~ "..." }}
+                    {% else %}
+                        {{ post.content }}
+                    {% endif %}
+            </p></article>
+            {{ post.createdAt | date('d.m.Y h:m') }} Comments: 3
+            <a class="btn btn-blog pull-right marginBottom10" href="{{ path('single_post', {'slug':post.slug}) }}">READ MORE</a>
         </div>
     {% endfor %}
     <ul class="pager">
