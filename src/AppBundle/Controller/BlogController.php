@@ -145,9 +145,9 @@ class BlogController extends Controller
 
         if ($form->isValid()) {
 
-//            foreach ($post->getTags() as $tag){
-//                $tag->addPost($post);
-//            }
+            foreach ($post->getTags() as $tag){
+                $tag->addPost($post);
+            }
 
             $em->persist($post);
             $em->flush();
@@ -167,7 +167,7 @@ class BlogController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm('AppBundle\Form\Blog\PostType', $post)
+        $form = $this->createForm('AppBundle\Form\PostType', $post)
             ->add('Сохранить', SubmitType::class, array(
                 'attr' => array('class' => 'btn btn-success center-btn')
             ));

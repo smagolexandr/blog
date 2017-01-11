@@ -28,17 +28,17 @@ class WidgetController extends Controller
      */
     public function popularPostsAction(Request $request)
     {
-        $count=5;
+//        $count=5;
         $em = $this->getDoctrine()->getManager();
-        $posts = $em->getRepository('AppBundle:Post')->findBy(
-            array(),
-            array('views' => 'DESC'),
-            $count
-        );
+//        $posts = $em->getRepository('AppBundle:Post')->findBy(
+//            array(),
+//            array('views' => 'DESC'),
+//            $count
+//        );
+        $posts = $this->get('PopularPosts')->getPopularPosts($em);
 
         return [
             'posts' => $posts,
-            'count' => $count
         ];
 
 //        $posts = $em->getRepository('AppBundle:Post')->getPopularPosts();

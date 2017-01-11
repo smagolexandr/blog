@@ -25,6 +25,15 @@ class PostType extends AbstractType
                 'required' => true,
                 'attr' => array('class' => 'form-control', 'rows' => "10")
             ))
+            ->add('tags', EntityType::class, array(
+                'class' => 'AppBundle\Entity\Tag',
+                'choice_label' => 'name',
+                'multiple' => true,
+                'placeholder' => 'Введите теги',
+                'label' => "Теги",
+                'required' => false,
+                'attr' => array('class' => 'form-control chosen-select')
+            ))
             ->add('image', TextType::class, array(
                 'label' => "Изображение",
                 'required' => false,
