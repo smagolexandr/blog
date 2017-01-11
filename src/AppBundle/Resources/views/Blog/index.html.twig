@@ -1,42 +1,50 @@
 {% extends 'AppBundle:Blog:layout.html.twig' %}
 
-{% block stylesheets %}
-    <style>
-        img{
-            width: 100%;
-        }
-    </style>
-{% endblock %}
-
 {% block main_column %}
 
     {% for post in posts %}
 
         <div class="col-md-12 blogShort" style=" padding-bottom: 10px">
             <h1>{{ post.title }}
-                    <span style="float:right;">
-                        <a href="{{ path('blog_post_edit', {'post':post.id}) }}" class="btn btn-xs">edit</a>
+                    <small style="float:right;">
+                        <a href="{{ path('blog_post_edit', {'post':post.id}) }}" class="btn btn-xs btn-primary">edit</a>
                         <button class="btn btn-xs btn-danger hidden">
                         {{ form_start(deleteForm[post.id],
                         {attr : {onsubmit: 'return confirm("Вы действительно хотите удалить пост?");' }}) }}
                             {{ form_widget(deleteForm[post.id].submit, {'label':'delete'}) }}
                             {{ form_end(deleteForm[post.id]) }}
                         </button>
-                    </span>
+                    </small>
             </h1>
+
             <hr>
             {% if post.image %}
-            <img class="col-sm-3 col-xs-12" src="{{ post.image }}">
+                <div class="row">
+                    <img class="col-xs-12 " src="{{ post.image }}">
+                </div>
+            <hr>
             {% endif %}
-            <article style="font-size: 1.3em;text-align: justify;"><p>
-                    {% if post.content|length > 349 %}
-                        {{ post.content | slice(0, 350) ~ "..." }}
+
+            <article style="text-align: justify;"><p>
+                    {% if post.content|length > 249 %}
+                        {{ post.content | slice(0, 250) ~ "..." }}
                     {% else %}
                         {{ post.content }}
                     {% endif %}
             </p></article>
-            {{ post.createdAt | date('d.m.Y h:m') }} Comments: 3
-            <a class="btn btn-blog pull-right marginBottom10" href="{{ path('single_post', {'slug':post.slug}) }}">READ MORE</a>
+
+            <div>
+                <i class="fa fa-clock-o fa-fw"></i> {{ post.createdAt | date('d.m.Y h:m') }} <i class="fa fa-eye"></i> {{ post.views }} <i class="fa fa-comments-o"></i> {{ post.comments | length }}
+
+                {%  for tag in post.tags %}
+                    <a class="label label-primary" href="{{ path('homepage', {'tag':tag.name}) }}">
+                        {{ tag.name }}
+                    </a>
+                {% endfor %}
+
+                <a class="btn btn-blog pull-right marginBottom10" href="{{ path('single_post', {'slug':post.slug}) }}">READ MORE</a>
+            </div>
+
         </div>
     {% endfor %}
     <ul class="pager">

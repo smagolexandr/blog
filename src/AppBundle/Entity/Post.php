@@ -40,9 +40,9 @@ class Post
     private $slug;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Author", inversedBy="posts")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="posts")
      */
-    private $author;
+    private $user;
 
     /**
      * @var string
@@ -51,6 +51,13 @@ class Post
      * @Assert\NotNull()
      */
     private $content;
+    
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="views", type="integer")
+     */
+    private $views = 0;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Comment", mappedBy="post")
@@ -317,30 +324,6 @@ class Post
     }
 
     /**
-     * Set author
-     *
-     * @param \AppBundle\Entity\Author $author
-     *
-     * @return Post
-     */
-    public function setAuthor(\AppBundle\Entity\Author $author = null)
-    {
-        $this->author = $author;
-
-        return $this;
-    }
-
-    /**
-     * Get author
-     *
-     * @return \AppBundle\Entity\Author
-     */
-    public function getAuthor()
-    {
-        return $this->author;
-    }
-
-    /**
      * Add comment
      *
      * @param \AppBundle\Entity\Comment $comment
@@ -372,5 +355,53 @@ class Post
     public function getComments()
     {
         return $this->comments;
+    }
+
+    /**
+     * Set views
+     *
+     * @param integer $views
+     *
+     * @return Post
+     */
+    public function setViews($views)
+    {
+        $this->views = $views;
+
+        return $this;
+    }
+
+    /**
+     * Get views
+     *
+     * @return integer
+     */
+    public function getViews()
+    {
+        return $this->views;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return Post
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

@@ -1,3 +1,26 @@
-{#{% for comment in comments %}#}
-    {#<h5>{{ comment.user }} - {{ comment.comment }}</h5>#}
-{#{% endfor %}#}
+{% if comments %}
+    <div class="col-xs-12 well">
+        <h4>
+            Last commented posts:
+        </h4>
+        {% for comment in comments %}
+            <div class="message col-md-12 col-sm-6  nopadding">
+                <div class="col-md-2 col-sm-3 nopadding">
+                    {% if comment.user.avatar %}<img src="{{ comment.user.avatar }}">{% endif %}
+                </div>
+                <div class="col-md-10 col-sm-9 content">
+                    <div><span class="author-nick">{{ comment.user.firstName }} {{ comment.user.lastName }}</span>, в теме:</div>
+                    <a href="{{ path('single_post', {'slug':comment.post.slug}) }}" class="title">
+                        {{ comment.post.title }}
+                    </a>
+                    <div class="meta">
+                        <span><i class="fa fa-clock-o" aria-hidden="true"></i>{{ comment.post.createdAt|date("d/m/Y") }}</span>
+                        <span><i class="fa fa-eye" aria-hidden="true"></i>{{ comment.post.views }}</span>
+                        <span><i class="fa fa-comments" aria-hidden="true"></i>{{ comment.post.comments|length }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+{% endif %}

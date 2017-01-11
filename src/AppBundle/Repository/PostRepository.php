@@ -10,4 +10,38 @@ namespace AppBundle\Repository;
  */
 class PostRepository extends \Doctrine\ORM\EntityRepository
 {
+       public function getBlogPosts()
+    {
+        return $this->getEntityManager()
+            ->createQuery('SELECT p, t
+                             FROM AppBundle:Post p
+                             LEFT JOIN p.tags t
+                             ORDER BY p.createdAt DESC
+                            ')
+            ->getResult();
+    }
+
+    public function getBlogPostsByParams($params)
+    {
+        $em = $this->getEntityManager();
+
+        $postsQuery = $em->createQueryBuilder()
+            ->select('p', 't')
+            ->from('AppBundle:Post', 'p')
+            ->leftJoin('p.tags', 't');
+
+        if ($params->has('tag') && $params->get('tag')){
+            $postsQuery->where('t.name = ?1')
+                ->setParameter(1, $params->get('tag'));
+        }
+
+        if ($params->has('title') && $params->get('title')) {
+            $postsQuery->where(
+                $postsQuery->expr()->like('p.title', ':title')
+            )
+                ->setParameter('title', '%' . $params->get('title') . '%');
+        }
+
+        return $postsQuery->getQuery()->getResult();
+    }
 }

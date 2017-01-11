@@ -5,11 +5,13 @@
         <div class="container">
             <div class="row">
 
-                <div class="col-lg-9">
+                <div class="col-lg-8">
                     {% block main_column %}{% endblock %}
                 </div>
-                <div class="col-lg-3">
-                    {{ render(controller('AppBundle:Widget:lastComments')) }}
+                <div class="col-lg-4">
+                    {{ include('AppBundle:Widget:search.html.twig') }}
+                    {{ render(controller('AppBundle:Widget:lastComments' , {'count':5})) }}
+                    {{ render(controller('AppBundle:Widget:popularPosts')) }}
                 </div>
             </div>
         </div>

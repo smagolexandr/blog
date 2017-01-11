@@ -10,4 +10,37 @@ namespace AppBundle\Repository;
  */
 class CommentRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getCommentsSorted($post_id)
+    {
+        return $this->getEntityManager()
+            ->createQuery('SELECT c, u
+                            FROM AppBundle:Comment c
+                            LEFT JOIN c.user u
+                            WHERE c.post = :post ORDER BY c.createdAt ASC')
+            ->setParameter('post', $post_id)
+            ->getResult();
+    }
+
+    public function getLastComments()
+    {
+        return $this->getEntityManager()
+            ->createQuery('SELECT c, u, p
+                            FROM AppBundle:Comment c
+                            LEFT JOIN c.user u
+                            LEFT JOIN c.post p
+                            ORDER BY c.createdAt ASC
+                            ')
+            ->setMaxResults(5)
+            ->getResult();
+        //todo fix getting comments of post in 1 query
+//        ->createQuery('SELECT c, a, p
+//                            FROM AppBundle:Comment c
+//                            LEFT JOIN c.author a
+//                            LEFT JOIN c.post p
+//                            LEFT JOIN p.comments pc
+//                            WHERE pc.post = p.id
+//                            ORDER BY c.createdAt ASC
+//                            ')
+//        ->setMaxResults(5)
+    }
 }
