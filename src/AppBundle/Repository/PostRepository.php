@@ -28,7 +28,8 @@ class PostRepository extends \Doctrine\ORM\EntityRepository
         $postsQuery = $em->createQueryBuilder()
             ->select('p', 't')
             ->from('AppBundle:Post', 'p')
-            ->leftJoin('p.tags', 't');
+            ->leftJoin('p.tags', 't')
+            ->orderBy('p.createdAt' ,'DESC');
 
         if ($params->has('tag') && $params->get('tag')){
             $postsQuery->where('t.name = ?1')
@@ -41,7 +42,6 @@ class PostRepository extends \Doctrine\ORM\EntityRepository
             )
                 ->setParameter('title', '%' . $params->get('title') . '%');
         }
-
         return $postsQuery->getQuery()->getResult();
     }
 }

@@ -9,7 +9,13 @@
 
     <!-- Author -->
     <p class="lead">
-        by <a href="#">{{ post.user.lastName }} {{ post.user.firstName }}</a>
+        by <a href="#">
+            {% if post.user.lastName is not empty %}
+                {{ post.user.lastName }} {{ post.user.firstName }}
+            {% else %}
+                {{ post.user.username }}
+            {% endif %}
+        </a>
     </p>
 
     <hr>
@@ -65,7 +71,7 @@
             </a>
             <div class="media-body">
                 <h4 class="media-heading">{{ comment.user.lastName }} {{ comment.user.firstName }}
-                    <small>{{ comment.createdAt | date('d.m.Y h:m') }}
+                    <small>{{ comment.createdAt | date('d.m.Y H:i:s', 'Europe/Kiev') }}
                     {% if deleteForm[comment.id] is defined %}
                         {{ form_start(deleteForm[comment.id],
                         {attr : {onsubmit: 'return confirm("Вы действительно хотите удалить комментарий?");' , 'style':'display:inline;'}}) }}

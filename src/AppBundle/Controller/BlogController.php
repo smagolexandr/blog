@@ -48,7 +48,6 @@ class BlogController extends Controller
      */
     public function singlePostAction(Post $post, Request $request)
     {
-        //dump($request->query);
         $deleteForm = [];
         $em = $this->getDoctrine()->getManager();
         $post->setViews((int)$post->getViews()+1);
@@ -136,8 +135,12 @@ class BlogController extends Controller
      */
     public function newPostHandleAction(Request $request)
     {
+        $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
+
+        if ($user instanceof User) {
         $post = new Post();
+        $post->setUser($user);
         $form = $this->createForm('AppBundle\Form\PostType', $post)
             ->add('Далее', SubmitType::class);
 
@@ -151,11 +154,12 @@ class BlogController extends Controller
 
             $em->persist($post);
             $em->flush();
+
+            }
             $url = $this->generateUrl('homepage');
-            return new RedirectResponse($url);
         }
 
-        return ['form'=>$form->createView()];
+        return new RedirectResponse($url);
     }
 
 

@@ -31,7 +31,7 @@ class User implements UserInterface
      *
      * @ORM\Column(name="username", type="string", length=100, unique=true)
      * @Assert\NotBlank()
-     * @Assert\Length(min=3)q
+     * @Assert\Length(min=3)
      */
     private $username;
 
@@ -82,29 +82,29 @@ class User implements UserInterface
     /**
      * The salt to use for hashing.
      *
-     * @var string
+     * @ORM\Column(name="salt", type="string")
      */
     protected $salt;
 
-    /**
-     * @var \DateTime
-     */
-    protected $lastLogin;
+//    /**
+//     * @var \DateTime
+//     */
+//    protected $lastLogin;
+//
+//    /**
+//     * Random string sent to the user email address in order to verify it.
+//     *
+//     * @var string
+//     */
+//    protected $confirmationToken;
+//
+//    /**
+//     * @var \DateTime
+//     */
+//    protected $passwordRequestedAt;
 
     /**
-     * Random string sent to the user email address in order to verify it.
-     *
-     * @var string
-     */
-    protected $confirmationToken;
-
-    /**
-     * @var \DateTime
-     */
-    protected $passwordRequestedAt;
-
-    /**
-     * @var array
+     * @ORM\Column(name="roles", type="array")
      */
     protected $roles;
 
@@ -345,14 +345,47 @@ class User implements UserInterface
         return null;
     }
 
+    public function addRole($role){
+        $this->roles[] = $role;
+
+        return $this;
+    }
+
     public function getRoles()
     {
         return array('ROLE_USER');
     }
-    
 
     public function getSalt()
     {
-        return null;
+        return $this->salt;
+    }
+
+    /**
+     * Set salt
+     *
+     * @param string $salt
+     *
+     * @return User
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+
+        return $this;
+    }
+
+    /**
+     * Set roles
+     *
+     * @param array $roles
+     *
+     * @return User
+     */
+    public function setRoles($roles)
+    {
+        $this->roles = $roles;
+
+        return $this;
     }
 }
