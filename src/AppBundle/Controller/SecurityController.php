@@ -13,6 +13,7 @@ class SecurityController extends Controller
 {
     /**
      * @Route("/login", name="login")
+     * @Template()
      */
     public function loginAction(Request $request)
     {
@@ -24,15 +25,15 @@ class SecurityController extends Controller
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('@App/Security/login.html.twig', array(
+        return [
             'last_username' => $lastUsername,
             'error'         => $error,
-        ));
+        ];
     }
 
 
     /**
-     * @Route("/register", name="register")
+     * @Route("/registration", name="registration")
      * @Template();
      */
     public function registerAction(Request $request)
@@ -46,11 +47,12 @@ class SecurityController extends Controller
 
             // Encode the new users password
             $encoder = $this->get('security.password_encoder');
+            $user -> setSalt(base_convert(sha1(uniqid(mt_rand(), true)), 16, 36));
             $password = $encoder->encodePassword($user, $user->getPassword());
             $user->setPassword($password);
 
             // Set their role
-            $user->setRole('ROLE_USER');
+            $user->addRole('ROLE_USER');
 
             // Save
             $em = $this->getDoctrine()->getManager();

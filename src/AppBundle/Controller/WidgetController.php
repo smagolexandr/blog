@@ -11,7 +11,7 @@ class WidgetController extends Controller
 {
     /**
      * @Template("AppBundle:Widget:lastComments.html.twig")
-     * @Route("/last_comments/{count}", name="widget_last_comments")
+     * @Route("/last_comments/", name="widget_last_comments")
      */
     public function lastCommentsAction(Request $request)
     {
