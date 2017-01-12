@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -14,7 +15,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @UniqueEntity("username")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @var int
@@ -52,14 +53,14 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="firstName", type="string", length=50)
+     * @ORM\Column(name="firstName", type="string", length=50, nullable=true)
      */
     private $firstName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="lastName", type="string", length=50)
+     * @ORM\Column(name="lastName", type="string", length=50, nullable=true)
      */
     private $lastName;
 
@@ -77,6 +78,37 @@ class User
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Comment", mappedBy="user")
      */
     private $comments;
+
+    /**
+     * The salt to use for hashing.
+     *
+     * @var string
+     */
+    protected $salt;
+
+    /**
+     * @var \DateTime
+     */
+    protected $lastLogin;
+
+    /**
+     * Random string sent to the user email address in order to verify it.
+     *
+     * @var string
+     */
+    protected $confirmationToken;
+
+    /**
+     * @var \DateTime
+     */
+    protected $passwordRequestedAt;
+
+    /**
+     * @var array
+     */
+    protected $roles;
+
+
 
     /**
      * Get id
@@ -306,5 +338,21 @@ class User
     public function getAvatar()
     {
         return $this->avatar;
+    }
+
+    public function eraseCredentials()
+    {
+        return null;
+    }
+
+    public function getRoles()
+    {
+        return array('ROLE_USER');
+    }
+    
+
+    public function getSalt()
+    {
+        return null;
     }
 }
