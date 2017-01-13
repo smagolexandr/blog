@@ -7,12 +7,13 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Blog\Post;
+use AppBundle\Entity\Blog\Comment;
 
 class AllowCUDVoter extends Voter {
     const VIEW = 'VIEW';
     const EDIT = 'EDIT';
 
-    public function supports($attribute, $subject)
+    public function supports($attribute, $entity)
     {
         // if the attribute isn't one we support, return false
         if (!in_array($attribute, array(self::VIEW, self::EDIT))) {
@@ -20,16 +21,16 @@ class AllowCUDVoter extends Voter {
         }
 
         // only vote on Post objects inside this voter
-        if (!$subject instanceof Post) {
+        if (!$entity instanceof Post && !$entity instanceof Comment) {
             return false;
         }
 
         return true;
     }
 
-    protected function voteOnAttribute($attribute, $post, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $entity, TokenInterface $token)
     {
-        if ($attribute === self::VIEW && !$post->isPrivate()) {
+        if ($attribute === self::VIEW) {
             return true;
         }
 
@@ -38,9 +39,14 @@ class AllowCUDVoter extends Voter {
             return false;
         }
 
-        if ($attribute === self::EDIT && $user->getId() === $post->getUser()->getId()) {
+       if ($entity instanceof Post && $attribute === self::EDIT && $user->getId() === $entity->getUser()->getId()){
+           return true;
+       }
+
+        if ($entity instanceof Comment && $attribute === self::EDIT && $user->getId() === $entity->getUser()->getId()){
             return true;
         }
+
         return false;
     }
 }

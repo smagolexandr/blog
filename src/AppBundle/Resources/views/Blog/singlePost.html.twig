@@ -51,12 +51,17 @@
     <!-- Comments Form -->
     <div class="well">
         <h4>Leave a Comment:</h4>
-        {{ form_start(newComment) }}
-        <div class="form-group">
-            {{ form_widget(newComment.content) }}
-        </div>
-        {{ form_widget(newComment.submit, {'attr':{'class':'btn btn-primary'}}) }}
-        {{ form_end(newComment) }}
+        {% if newComment is defined %}
+            {{ form_start(newComment) }}
+            <div class="form-group">
+                {{ form_widget(newComment.content) }}
+            </div>
+            {{ form_widget(newComment.submit, {'attr':{'class':'btn btn-primary'}}) }}
+            {{ form_end(newComment) }}
+        {% else %}
+            <div>Что бы оставить комментарий нужно <a href="{{ path('login') }}">авторизироваться.</a></div>
+        {% endif %}
+
     </div>
 
 

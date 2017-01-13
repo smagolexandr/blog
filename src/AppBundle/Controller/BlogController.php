@@ -50,32 +50,41 @@ class BlogController extends Controller
      */
     public function singlePostAction(Post $post, Request $request)
     {
+        /** @var User $user */
+        $user = $this->getUser();
+        $response=[];
         $deleteForm = [];
         $em = $this->getDoctrine()->getManager();
-        $post->setViews((int)$post->getViews()+1);
-        $em->persist($post);
-        $em->flush();
 
         $comment = new Comment();
 
-        $comment->setPost($post);
-        $form = $this->createForm('AppBundle\Form\Blog\CommentType', $comment,
-            array(
-                'action' => $this->generateUrl('new_comment', ['slug'=>$post->getSlug()])
-            ))
-            ->add('submit', SubmitType::class);
+        if ($user instanceof User) {
+            $comment = new Comment();
+            $comment->setUser($user);
+            $comment->setPost($post);
+
+            $form = $this->createForm('AppBundle\Form\Blog\CommentType', $comment,
+                array(
+                    'action' => $this->generateUrl('new_comment', ['slug'=>$post->getSlug()])
+                ))
+                ->add('submit', SubmitType::class);
+            $response['newComment'] = $form->createView();
+        }
 
         $comments = $em->getRepository('AppBundle:Blog\Comment')->getCommentsSorted($post->getId());
 
         foreach ($comments as $comment) {
-            if ($this->isGranted('EDIT', $post)) {
+            if ($this->isGranted('EDIT', $comment) || $this->isGranted('EDIT', $post)) {
                 $deleteForm[$comment->getId()] = $this->createDeleteCommentForm($comment)->createView();
             }
         }
 
-        return [
+        $post->setViews((int)$post->getViews()+1);
+        $em->persist($post);
+        $em->flush();
+
+        return $response += [
             'post' => $post,
-            'newComment' =>  $form->createView(),
             'deleteForm' => $deleteForm
         ];
     }
@@ -85,15 +94,17 @@ class BlogController extends Controller
      * @return RedirectResponse
      *
      * @Route("/delete/{id}", name="post_delete")
-     * @Method("DELETE")
+     * "Method("DELETE|RedirectResponse")
      */
     public function deleteAction(Post $post)
     {
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($post);
-        $em->flush();
-
-        return $this->redirect($this->generateUrl('homepage'));
+        if($this->isGranted('EDIT', $post)){
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($post);
+            $em->flush();
+            return $this->redirect($this->generateUrl('homepage'));
+        }
+        throw $this->createAccessDeniedException('Access denied.');
     }
 
     /**
@@ -121,6 +132,8 @@ class BlogController extends Controller
      */
     public function newPostAction()
     {
+        $user = $this->getUser();
+        if ($user instanceof User) {
         $em = $this->getDoctrine()->getManager();
         $post = new Post();
         $form = $this->createForm('AppBundle\Form\Blog\PostType', $post)
@@ -129,6 +142,11 @@ class BlogController extends Controller
             ));
 
         return ['form'=>$form->createView()];
+        }
+        else
+        {
+            throw $this->createAccessDeniedException('Access denied.');
+        }
     }
 
     /**
@@ -162,41 +180,45 @@ class BlogController extends Controller
             }
             $url = $this->generateUrl('homepage');
         }
-
-        return new RedirectResponse($url);
+        throw $this->createAccessDeniedException('Access denied.');
     }
 
 
     /**
-     * @Route("/{post}/edit", name="blog_post_edit")
+     * @Route("/edit/{post}", name="blog_post_edit")
      * @Template("AppBundle:Blog:edit.html.twig")
      */
     public function editPostAction(Request $request, Post $post)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm('AppBundle\Form\Blog\PostType', $post)
-            ->add('Сохранить', SubmitType::class, array(
-                'attr' => array('class' => 'btn btn-success center-btn')
-            ));
 
-        $form->handleRequest($request);
+        if($this->isGranted('EDIT', $post)){
+            $form = $this->createForm('AppBundle\Form\Blog\PostType', $post)
+                ->add('Сохранить', SubmitType::class, array(
+                    'attr' => array('class' => 'btn btn-success center-btn')
+                ));
 
-        if ($form->isValid()) {
+            $form->handleRequest($request);
 
-            foreach ($post->getTags() as $tag){
-                if (!$tag->getPosts()->contains($post)){
-                    $tag->addPost($post);
+            if ($form->isValid()) {
+
+                foreach ($post->getTags() as $tag){
+                    if (!$tag->getPosts()->contains($post)){
+                        $tag->addPost($post);
+                    }
                 }
-            }
 
-            $em->persist($post);
-            $em->flush();
+                $em->persist($post);
+                $em->flush();
+
+            }
+            return [
+                'form' => $form->createView()
+            ];
+        } else {
+            throw $this->createAccessDeniedException('Access denied.');
         }
-        return [
-            'form'=>$form->createView(),
-            'post' => $post
-        ];
     }
 
     /**
@@ -208,8 +230,6 @@ class BlogController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $url = $this->generateUrl('single_post', ['slug'=>$post->getSlug()]);
-
-
 
         $user = $this->getUser();
         if ($user instanceof User) {
@@ -232,7 +252,6 @@ class BlogController extends Controller
         }
             $url = $url . '#comment_' . $comment->getId();
 
-
         return new RedirectResponse($url);
     }
 
@@ -252,7 +271,8 @@ class BlogController extends Controller
      * @param $comment
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @Route("comment/{id}/delete", name="comment_delete")
-     * @ParamConverter("comment", class="AppBundle:Comment", options={"id" = "id"})
+     * @ParamConverter("comment", class="AppBundle:Blog\Comment", options={"id" = "id"})
+     * @ Method("DELETE|RedirectResponse")
      */
     public function deleteCommentAction(Comment $comment)
     {
@@ -262,14 +282,20 @@ class BlogController extends Controller
         if (!$comment) {
             throw $this->createNotFoundException('Unable to find Comment entity.');
         }
-        $em->remove($comment);
-        $em->flush();
 
-        return $this->redirect($this->generateUrl('single_post',
-            array(
-                'slug'=>$post->getSlug()
-            ))
-        );
+        if($this->isGranted('EDIT', $comment) || $this->isGranted('EDIT', $post)) {
+            $em->remove($comment);
+            $em->flush();
 
+            return $this->redirect($this->generateUrl('single_post',
+                array(
+                    'slug' => $post->getSlug()
+                ))
+            );
+        }
+        else
+        {
+            throw $this->createAccessDeniedException('Access denied.');
+        }
     }
 }
