@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Form;
+namespace AppBundle\Form\Blog;
 
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -26,7 +26,7 @@ class PostType extends AbstractType
                 'attr' => array('class' => 'form-control', 'rows' => "10")
             ))
             ->add('tags', EntityType::class, array(
-                'class' => 'AppBundle\Entity\Tag',
+                'class' => 'AppBundle\Entity\Blog\Tag',
                 'choice_label' => 'name',
                 'multiple' => true,
                 'placeholder' => 'Введите теги',
@@ -44,6 +44,6 @@ class PostType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(['data_class' => 'AppBundle\Entity\Post']);
+        $resolver->setDefaults(['data_class' => 'AppBundle\Entity\Blog\Post']);
     }
 }

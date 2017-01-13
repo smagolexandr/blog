@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Entity;
+namespace AppBundle\Entity\Blog;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -9,7 +9,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * Comment
  *
  * @ORM\Table(name="comment")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\CommentRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\Blog\CommentRepository")
  */
 class Comment
 {
@@ -30,7 +30,7 @@ class Comment
     private $content;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Post", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Blog\Post", inversedBy="comments")
      */
     private $post;
 
@@ -169,30 +169,6 @@ class Comment
     }
 
     /**
-     * Set post
-     *
-     * @param \AppBundle\Entity\Post $post
-     *
-     * @return Comment
-     */
-    public function setPost(\AppBundle\Entity\Post $post = null)
-    {
-        $this->post = $post;
-
-        return $this;
-    }
-
-    /**
-     * Get post
-     *
-     * @return \AppBundle\Entity\Post
-     */
-    public function getPost()
-    {
-        return $this->post;
-    }
-
-    /**
      * Set user
      *
      * @param \AppBundle\Entity\User $user
@@ -214,5 +190,29 @@ class Comment
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set post
+     *
+     * @param \AppBundle\Entity\Blog\Post $post
+     *
+     * @return Comment
+     */
+    public function setPost(\AppBundle\Entity\Blog\Post $post = null)
+    {
+        $this->post = $post;
+
+        return $this;
+    }
+
+    /**
+     * Get post
+     *
+     * @return \AppBundle\Entity\Blog\Post
+     */
+    public function getPost()
+    {
+        return $this->post;
     }
 }

@@ -16,7 +16,7 @@ class WidgetController extends Controller
     public function lastCommentsAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $comments = $em->getRepository('AppBundle:Comment')->getLastComments();
+        $comments = $em->getRepository('AppBundle:Blog\Comment')->getLastComments();
         return [
             "comments" => $comments
         ];
@@ -30,7 +30,7 @@ class WidgetController extends Controller
     {
         $count=5;
         $em = $this->getDoctrine()->getManager();
-        $posts = $em->getRepository('AppBundle:Post')->findBy(
+        $posts = $em->getRepository('AppBundle:Blog\Post')->findBy(
             array(),
             array('views' => 'DESC'),
             $count

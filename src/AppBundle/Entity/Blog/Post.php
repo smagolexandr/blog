@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Entity;
+namespace AppBundle\Entity\Blog;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Post
  *
  * @ORM\Table(name="post")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\PostRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\Blog\PostRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
 class Post
@@ -60,12 +60,12 @@ class Post
     private $views = 0;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Comment", mappedBy="post")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Blog\Comment", mappedBy="post")
      */
     private $comments;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Tag", mappedBy="posts")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Blog\Tag", mappedBy="posts")
      */
     private $tags;
 
@@ -290,74 +290,6 @@ class Post
     }
 
     /**
-     * Add tag
-     *
-     * @param \AppBundle\Entity\Tag $tag
-     *
-     * @return Post
-     */
-    public function addTag(\AppBundle\Entity\Tag $tag)
-    {
-        $this->tags[] = $tag;
-
-        return $this;
-    }
-
-    /**
-     * Remove tag
-     *
-     * @param \AppBundle\Entity\Tag $tag
-     */
-    public function removeTag(\AppBundle\Entity\Tag $tag)
-    {
-        $this->tags->removeElement($tag);
-    }
-
-    /**
-     * Get tags
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTags()
-    {
-        return $this->tags;
-    }
-
-    /**
-     * Add comment
-     *
-     * @param \AppBundle\Entity\Comment $comment
-     *
-     * @return Post
-     */
-    public function addComment(\AppBundle\Entity\Comment $comment)
-    {
-        $this->comments[] = $comment;
-
-        return $this;
-    }
-
-    /**
-     * Remove comment
-     *
-     * @param \AppBundle\Entity\Comment $comment
-     */
-    public function removeComment(\AppBundle\Entity\Comment $comment)
-    {
-        $this->comments->removeElement($comment);
-    }
-
-    /**
-     * Get comments
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getComments()
-    {
-        return $this->comments;
-    }
-
-    /**
      * Set views
      *
      * @param integer $views
@@ -403,5 +335,73 @@ class Post
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Add comment
+     *
+     * @param \AppBundle\Entity\Blog\Comment $comment
+     *
+     * @return Post
+     */
+    public function addComment(\AppBundle\Entity\Blog\Comment $comment)
+    {
+        $this->comments[] = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Remove comment
+     *
+     * @param \AppBundle\Entity\Blog\Comment $comment
+     */
+    public function removeComment(\AppBundle\Entity\Blog\Comment $comment)
+    {
+        $this->comments->removeElement($comment);
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * Add tag
+     *
+     * @param \AppBundle\Entity\Blog\Tag $tag
+     *
+     * @return Post
+     */
+    public function addTag(\AppBundle\Entity\Blog\Tag $tag)
+    {
+        $this->tags[] = $tag;
+
+        return $this;
+    }
+
+    /**
+     * Remove tag
+     *
+     * @param \AppBundle\Entity\Blog\Tag $tag
+     */
+    public function removeTag(\AppBundle\Entity\Blog\Tag $tag)
+    {
+        $this->tags->removeElement($tag);
+    }
+
+    /**
+     * Get tags
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTags()
+    {
+        return $this->tags;
     }
 }

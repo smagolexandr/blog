@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Repository;
+namespace AppBundle\Repository\Blog;
 
 /**
  * CommentRepository
@@ -14,7 +14,7 @@ class CommentRepository extends \Doctrine\ORM\EntityRepository
     {
         return $this->getEntityManager()
             ->createQuery('SELECT c, u
-                            FROM AppBundle:Comment c
+                            FROM AppBundle:Blog\Comment c
                             LEFT JOIN c.user u
                             WHERE c.post = :post ORDER BY c.createdAt ASC')
             ->setParameter('post', $post_id)
@@ -25,7 +25,7 @@ class CommentRepository extends \Doctrine\ORM\EntityRepository
     {
         return $this->getEntityManager()
             ->createQuery('SELECT c, u, p
-                            FROM AppBundle:Comment c
+                            FROM AppBundle:Blog\Comment c
                             LEFT JOIN c.user u
                             LEFT JOIN c.post p
                             ORDER BY c.createdAt ASC

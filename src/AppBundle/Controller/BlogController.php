@@ -3,8 +3,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
-use AppBundle\Entity\Post;
-use AppBundle\Entity\Comment;
+use AppBundle\Entity\Blog\Post;
+use AppBundle\Entity\Blog\Comment;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -25,16 +25,18 @@ class BlogController extends Controller
     public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $posts = $em->getRepository('AppBundle\Entity\Post')->getBlogPostsByParams($request->query);
+        $posts = $em->getRepository('AppBundle\Entity\Blog\Post')->getBlogPostsByParams($request->query);
 
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate($posts, $request->query->getInt('page', 1), 5);
 
         $deleteForm = [];
-        foreach ($posts as $entity){
-            $deleteForm[$entity->getId()] = $this->createDeletePostForm($entity)->createView();
-        }
 
+        foreach ($posts as $post) {
+            if($this->isGranted('EDIT', $post)){
+                $deleteForm[$post->getId()] = $this->createDeletePostForm($post)->createView();
+            }
+        }
         return [
             'posts' => $pagination,
             'deleteForm' => $deleteForm
@@ -43,7 +45,7 @@ class BlogController extends Controller
 
     /**
      * @Route("/post/{slug}", name="single_post")
-     * @ParamConverter("post", class="AppBundle:Post", options={"slug" = "slug"})
+     * @ParamConverter("post", class="AppBundle:Blog\Post", options={"slug" = "slug"})
      * @Template()
      */
     public function singlePostAction(Post $post, Request $request)
@@ -57,16 +59,18 @@ class BlogController extends Controller
         $comment = new Comment();
 
         $comment->setPost($post);
-        $form = $this->createForm('AppBundle\Form\CommentType', $comment,
+        $form = $this->createForm('AppBundle\Form\Blog\CommentType', $comment,
             array(
                 'action' => $this->generateUrl('new_comment', ['slug'=>$post->getSlug()])
             ))
             ->add('submit', SubmitType::class);
 
-        $comments = $em->getRepository('AppBundle:Comment')->getCommentsSorted($post->getId());
+        $comments = $em->getRepository('AppBundle:Blog\Comment')->getCommentsSorted($post->getId());
 
         foreach ($comments as $comment) {
+            if ($this->isGranted('EDIT', $post)) {
                 $deleteForm[$comment->getId()] = $this->createDeleteCommentForm($comment)->createView();
+            }
         }
 
         return [
@@ -119,7 +123,7 @@ class BlogController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $post = new Post();
-        $form = $this->createForm('AppBundle\Form\PostType', $post)
+        $form = $this->createForm('AppBundle\Form\Blog\PostType', $post)
             ->add('Далее', SubmitType::class, array(
                 'attr' => array('class' => 'btn btn-success center-btn')
             ));
@@ -141,7 +145,7 @@ class BlogController extends Controller
         if ($user instanceof User) {
         $post = new Post();
         $post->setUser($user);
-        $form = $this->createForm('AppBundle\Form\PostType', $post)
+        $form = $this->createForm('AppBundle\Form\Blog\PostType', $post)
             ->add('Далее', SubmitType::class);
 
         $form->handleRequest($request);
@@ -171,7 +175,7 @@ class BlogController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm('AppBundle\Form\PostType', $post)
+        $form = $this->createForm('AppBundle\Form\Blog\PostType', $post)
             ->add('Сохранить', SubmitType::class, array(
                 'attr' => array('class' => 'btn btn-success center-btn')
             ));
@@ -198,7 +202,7 @@ class BlogController extends Controller
     /**
      *
      * @Route("/post/{slug}/new-comment", name="new_comment")
-     * @ParamConverter("post", class="AppBundle:Post", options={"slug" = "slug"})
+     * @ParamConverter("post", class="AppBundle:Blog\Post", options={"slug" = "slug"})
      */
     public function newCommentHandler(Request $request, Post $post)
     {
@@ -206,11 +210,14 @@ class BlogController extends Controller
         $url = $this->generateUrl('single_post', ['slug'=>$post->getSlug()]);
 
 
+
+        $user = $this->getUser();
+        if ($user instanceof User) {
             $comment = new Comment();
-            $comment->setUser($em->getRepository('AppBundle:User')->find(1));
+            $comment->setUser($user);
             $comment->setPost($post);
 
-            $form = $this->createForm('AppBundle\Form\CommentType', $comment,
+            $form = $this->createForm('AppBundle\Form\Blog\CommentType', $comment,
                 array(
                     'action' => $this->generateUrl('new_comment', ['slug'=>$post->getSlug()])
                 ))
@@ -222,7 +229,7 @@ class BlogController extends Controller
                 $em->persist($comment);
                 $em->flush();
             }
-
+        }
             $url = $url . '#comment_' . $comment->getId();
 
 

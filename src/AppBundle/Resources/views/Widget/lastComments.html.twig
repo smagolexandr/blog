@@ -9,7 +9,13 @@
                     {% if comment.user.avatar %}<img src="{{ comment.user.avatar }}">{% endif %}
                 </div>
                 <div class="col-md-10 col-sm-9 content">
-                    <div><span class="author-nick">{{ comment.user.firstName }} {{ comment.user.lastName }}</span>, в теме:</div>
+                    <div><span class="author-nick">
+                            {% if comment.user.nickname is not empty %}
+                                {{ comment.user.nickname }}
+                            {% else %}
+                                {{ comment.user.username }}
+                            {% endif %}
+                        </span>, в теме:</div>
                     <a href="{{ path('single_post', {'slug':comment.post.slug}) }}" class="title">
                         {{ comment.post.title }}
                     </a>

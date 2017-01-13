@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Repository;
+namespace AppBundle\Repository\Blog;
 
 /**
  * PostRepository
@@ -10,24 +10,13 @@ namespace AppBundle\Repository;
  */
 class PostRepository extends \Doctrine\ORM\EntityRepository
 {
-       public function getBlogPosts()
-    {
-        return $this->getEntityManager()
-            ->createQuery('SELECT p, t
-                             FROM AppBundle:Post p
-                             LEFT JOIN p.tags t
-                             ORDER BY p.createdAt DESC
-                            ')
-            ->getResult();
-    }
-
     public function getBlogPostsByParams($params)
     {
         $em = $this->getEntityManager();
 
         $postsQuery = $em->createQueryBuilder()
             ->select('p', 't')
-            ->from('AppBundle:Post', 'p')
+            ->from('AppBundle:Blog\Post', 'p')
             ->leftJoin('p.tags', 't')
             ->orderBy('p.createdAt' ,'DESC');
 

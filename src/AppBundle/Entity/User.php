@@ -53,16 +53,10 @@ class User implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="firstName", type="string", length=50, nullable=true)
+     * @ORM\Column(name="nickname", type="string", length=50, nullable=true)
      */
-    private $firstName;
+    private $nickname;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="lastName", type="string", length=50, nullable=true)
-     */
-    private $lastName;
 
     /**
      * @ORM\Column(name="avatar", type="string", length=255, nullable=true, options={"default" : "https://blink.la/img/default_avatar.jpeg"})
@@ -70,12 +64,12 @@ class User implements UserInterface
     protected $avatar="https://blink.la/img/default_avatar.jpeg";
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Post", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Blog\Post", mappedBy="user")
      */
     private $posts;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Comment", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Blog\Comment", mappedBy="user")
      */
     private $comments;
 
@@ -200,121 +194,6 @@ class User implements UserInterface
         $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    /**
-     * Set firstName
-     *
-     * @param string $firstName
-     *
-     * @return User
-     */
-    public function setFirstName($firstName)
-    {
-        $this->firstName = $firstName;
-
-        return $this;
-    }
-
-    /**
-     * Get firstName
-     *
-     * @return string
-     */
-    public function getFirstName()
-    {
-        return $this->firstName;
-    }
-
-    /**
-     * Set lastName
-     *
-     * @param string $lastName
-     *
-     * @return User
-     */
-    public function setLastName($lastName)
-    {
-        $this->lastName = $lastName;
-
-        return $this;
-    }
-
-    /**
-     * Get lastName
-     *
-     * @return string
-     */
-    public function getLastName()
-    {
-        return $this->lastName;
-    }
-
-    /**
-     * Add post
-     *
-     * @param \AppBundle\Entity\Post $post
-     *
-     * @return User
-     */
-    public function addPost(\AppBundle\Entity\Post $post)
-    {
-        $this->posts[] = $post;
-
-        return $this;
-    }
-
-    /**
-     * Remove post
-     *
-     * @param \AppBundle\Entity\Post $post
-     */
-    public function removePost(\AppBundle\Entity\Post $post)
-    {
-        $this->posts->removeElement($post);
-    }
-
-    /**
-     * Get posts
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPosts()
-    {
-        return $this->posts;
-    }
-
-    /**
-     * Add comment
-     *
-     * @param \AppBundle\Entity\Comment $comment
-     *
-     * @return User
-     */
-    public function addComment(\AppBundle\Entity\Comment $comment)
-    {
-        $this->comments[] = $comment;
-
-        return $this;
-    }
-
-    /**
-     * Remove comment
-     *
-     * @param \AppBundle\Entity\Comment $comment
-     */
-    public function removeComment(\AppBundle\Entity\Comment $comment)
-    {
-        $this->comments->removeElement($comment);
-    }
-
-    /**
-     * Get comments
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getComments()
-    {
-        return $this->comments;
-    }
 
     /**
      * Set avatar
@@ -387,5 +266,105 @@ class User implements UserInterface
         $this->roles = $roles;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasRole($role)
+    {
+        return in_array(strtoupper($role), $this->getRoles(), true);
+    }
+
+    /**
+     * Set nickname
+     *
+     * @param string $nickname
+     *
+     * @return User
+     */
+    public function setNickname($nickname)
+    {
+        $this->nickname = $nickname;
+
+        return $this;
+    }
+
+    /**
+     * Get nickname
+     *
+     * @return string
+     */
+    public function getNickname()
+    {
+        return $this->nickname;
+    }
+
+    /**
+     * Add post
+     *
+     * @param \AppBundle\Entity\Blog\Post $post
+     *
+     * @return User
+     */
+    public function addPost(\AppBundle\Entity\Blog\Post $post)
+    {
+        $this->posts[] = $post;
+
+        return $this;
+    }
+
+    /**
+     * Remove post
+     *
+     * @param \AppBundle\Entity\Blog\Post $post
+     */
+    public function removePost(\AppBundle\Entity\Blog\Post $post)
+    {
+        $this->posts->removeElement($post);
+    }
+
+    /**
+     * Get posts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPosts()
+    {
+        return $this->posts;
+    }
+
+    /**
+     * Add comment
+     *
+     * @param \AppBundle\Entity\Blog\Comment $comment
+     *
+     * @return User
+     */
+    public function addComment(\AppBundle\Entity\Blog\Comment $comment)
+    {
+        $this->comments[] = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Remove comment
+     *
+     * @param \AppBundle\Entity\Blog\Comment $comment
+     */
+    public function removeComment(\AppBundle\Entity\Blog\Comment $comment)
+    {
+        $this->comments->removeElement($comment);
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
     }
 }

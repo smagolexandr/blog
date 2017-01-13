@@ -4,13 +4,13 @@ AppBundle\Entity\User:
     user_{1..15}:
         username (unique): <word(10)>
         password: <password()>
-        lastName: <lastName()>
-        firstName: <firstName()>
+        nickname: <lastName()> <firstName()>
+        salt:   <word(10)>
         email (unique): <email()>
 
 #################### BLOG #########################
 
-AppBundle\Entity\Post:
+AppBundle\Entity\Blog\Post:
     blogpost_{1..20}:
         title (unique): <text(20)>
         content: <text(1000)>
@@ -19,13 +19,13 @@ AppBundle\Entity\Post:
         comments: ['@blogcomment*']
         tags: ['@blogtag*']
 
-AppBundle\Entity\Comment:
+AppBundle\Entity\Blog\Comment:
     blogcomment_{1..100}:
         content: <text(200)>
         user: '@user*'
         post: '@blogpost*'
 
-AppBundle\Entity\Tag:
+AppBundle\Entity\Blog\Tag:
     blogtag_{1..100}:
         name: <word(10)>_<numberBetween(1, 100000)>
         post: ['@blogpost*']

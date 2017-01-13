@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Entity;
+namespace AppBundle\Entity\Blog;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -9,7 +9,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * Tag
  *
  * @ORM\Table(name="tag")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\TagRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\Blog\TagRepository")
  */
 class Tag
 {
@@ -30,7 +30,7 @@ class Tag
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Post", inversedBy="tags")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Blog\Post", inversedBy="tags")
      */
     private $posts;
 
@@ -75,14 +75,15 @@ class Tag
         $this->posts = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+
     /**
      * Add post
      *
-     * @param \AppBundle\Entity\Post $post
+     * @param \AppBundle\Entity\Blog\Post $post
      *
      * @return Tag
      */
-    public function addPost(\AppBundle\Entity\Post $post)
+    public function addPost(\AppBundle\Entity\Blog\Post $post)
     {
         $this->posts[] = $post;
 
@@ -92,9 +93,9 @@ class Tag
     /**
      * Remove post
      *
-     * @param \AppBundle\Entity\Post $post
+     * @param \AppBundle\Entity\Blog\Post $post
      */
-    public function removePost(\AppBundle\Entity\Post $post)
+    public function removePost(\AppBundle\Entity\Blog\Post $post)
     {
         $this->posts->removeElement($post);
     }

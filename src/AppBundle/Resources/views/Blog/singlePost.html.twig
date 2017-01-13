@@ -10,8 +10,8 @@
     <!-- Author -->
     <p class="lead">
         by <a href="#">
-            {% if post.user.lastName is not empty %}
-                {{ post.user.lastName }} {{ post.user.firstName }}
+            {% if post.user.nickname is not empty %}
+                {{ post.user.nickname }}
             {% else %}
                 {{ post.user.username }}
             {% endif %}
@@ -70,7 +70,12 @@
                 <img class="media-object" src="{{ comment.user.avatar }}" alt="" style="height: 64px;">
             </a>
             <div class="media-body">
-                <h4 class="media-heading">{{ comment.user.lastName }} {{ comment.user.firstName }}
+                <h4 class="media-heading">
+                    {% if comment.user.nickname is not empty %}
+                        {{ comment.user.nickname }}
+                    {% else %}
+                        {{ comment.user.username }}
+                    {% endif %}
                     <small>{{ comment.createdAt | date('d.m.Y H:i:s', 'Europe/Kiev') }}
                     {% if deleteForm[comment.id] is defined %}
                         {{ form_start(deleteForm[comment.id],
