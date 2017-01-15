@@ -20,9 +20,10 @@
             });
         });
         function newTag(tag) {
+            var route = "{{ path('new_tag') | escape('js') }}";
             $.ajax({
                 type: 'POST',
-                url: Routing.generate('admin_new_tag'),
+                url: route,
                 data: {'tag':tag},
                 success: function (data) {
                     console.log(data);
