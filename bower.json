@@ -18,6 +18,7 @@
     "jquery": "^3.1.1",
     "bootstrap": "^3.3.7",
     "font-awesome": "^4.7.0",
-    "chosen": "^1.6.2"
+    "chosen": "^1.6.2",
+    "AdminLTE": "adminlte#^2.3.11"
   }
 }

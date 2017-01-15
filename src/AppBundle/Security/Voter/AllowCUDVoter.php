@@ -30,20 +30,21 @@ class AllowCUDVoter extends Voter {
 
     protected function voteOnAttribute($attribute, $entity, TokenInterface $token)
     {
-        if ($attribute === self::VIEW) {
+        $user = $token->getUser();
+
+        if ($attribute === self::VIEW AND $entity->getApproved() OR $user instanceof User AND $user->getId() === $entity->getUser()->getId()) {
             return true;
         }
 
-        $user = $token->getUser();
         if (!$user instanceof User) {
             return false;
         }
 
-       if ($entity instanceof Post && $attribute === self::EDIT && $user->getId() === $entity->getUser()->getId()){
+       if ($entity instanceof Post && $attribute === self::EDIT && $user->getId() === $entity->getUser()->getId() || $user->hasRole('ROLE_ADMIN')){
            return true;
        }
 
-        if ($entity instanceof Comment && $attribute === self::EDIT && $user->getId() === $entity->getUser()->getId()){
+        if ($entity instanceof Comment && $attribute === self::EDIT && $user->getId() === $entity->getUser()->getId() || $user->hasRole('ROLE_ADMIN')){
             return true;
         }
 

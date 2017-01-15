@@ -1,0 +1,74 @@
+{% extends(':Admin:base.html.twig') %}
+
+{% block breadcrumbs %}
+    <li ><a href="{{ path('admin_index') }}"><i class="fa fa-dashboard"></i>Панель</a></li>
+    <li >Казино</li>
+{% endblock breadcrumbs %}
+
+{% block titlePage %}
+    Posts list
+{% endblock  titlePage %}
+
+{% block content %}
+    <div class="box box-primary">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Views</th>
+                <th>Comments</th>
+                <th>Approved</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for post in posts %}
+                <tr>
+                    <td>{{ post.id }}</td>
+                    <td>
+                        <a href="{{ path('single_post', {'slug': post.slug}) }}" target="_blank">{{ post.title }}</a>
+                    </td>
+                    <td>
+                        {% if post.user.nickname %}
+                            {{ post.user.nickname }}
+                        {% else %}
+                            {{ post.user.username }}
+                        {% endif %}
+                    </td>
+                    <td>{{ post.views }}</td>
+                    <td>{{ post.comments|length }}</td>
+                    <td>
+                        {% if post.approved %}
+                            <i class="fa fa-check-circle"></i>
+                        {% else %}
+                            <i class="fa fa-times"></i>
+                        {% endif %}
+                    </td>
+                    <td class="controls-col">
+                        <a href="{{ path('blog_post_edit', {'id':post.id}) }}" class="btn btn-xs fa fa-edit"></a>
+                        {#<button class="btn btn-xs btn-danger hidden">#}
+                            {#<i class="">#}
+                                {#{{ form_start(deleteForm[post.id],#}
+                                {#{attr : {onsubmit: 'return confirm("Вы действительно хотите удалить пост?");' }}) }}#}
+                                {#{{ form_widget(deleteForm[post.id].submit) }}#}
+                                {#{{ form_end(deleteForm[post.id]) }}#}
+                            {#</i>#}
+                        {#</button>#}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <ul class="pager">
+            {{ knp_pagination_render(posts) }}
+        </ul>
+    </div>
+{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block js %}
+{% endblock %}

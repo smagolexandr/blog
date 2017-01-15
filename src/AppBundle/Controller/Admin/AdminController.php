@@ -20,10 +20,6 @@ class AdminController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-        $users = $em -> getRepository('AppBundle:User')->findAll();
-        return [
-            'users' => $users
-        ];
+
     }
 }

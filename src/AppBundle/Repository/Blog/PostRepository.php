@@ -10,6 +10,31 @@ namespace AppBundle\Repository\Blog;
  */
 class PostRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getBlogPosts()
+    {
+        return $this->getEntityManager()
+            ->createQuery('SELECT p, c, u
+                             FROM AppBundle:Blog\Post p
+                             JOIN p.user u
+                             LEFT JOIN p.comments c
+                             ORDER BY p.createdAt DESC
+                            ')
+            ->getResult();
+    }
+
+    public function getUnapprovedPosts()
+    {
+        return $this->getEntityManager()
+            ->createQuery('SELECT p, c, u
+                             FROM AppBundle:Blog\Post p
+                             JOIN p.user u
+                             LEFT JOIN p.comments c
+                             WHERE p.approved = 0
+                             ORDER BY p.createdAt DESC
+                            ')
+            ->getResult();
+    }
+
     public function getBlogPostsByParams($params)
     {
         $em = $this->getEntityManager();

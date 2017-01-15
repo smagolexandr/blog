@@ -58,6 +58,16 @@ class User implements UserInterface
     private $nickname;
 
 
+
+    /**
+     * @var \DateTime $createdAt
+     *
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
+     * @Assert\DateTime()
+     */
+    private $createdAt;
+
     /**
      * @ORM\Column(name="avatar", type="string", length=255, nullable=true, options={"default" : "https://blink.la/img/default_avatar.jpeg"})
      */
@@ -366,5 +376,29 @@ class User implements UserInterface
     public function getComments()
     {
         return $this->comments;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return User
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
     }
 }
