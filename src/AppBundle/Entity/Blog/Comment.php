@@ -40,6 +40,13 @@ class Comment
     private $user;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="approved", type="boolean", options={"default": false})
+     */
+    private $approved = false;
+
+    /**
      * @var \DateTime $createdAt
      *
      * @Gedmo\Timestampable(on="create")
@@ -214,5 +221,29 @@ class Comment
     public function getPost()
     {
         return $this->post;
+    }
+
+    /**
+     * Set approved
+     *
+     * @param boolean $approved
+     *
+     * @return Comment
+     */
+    public function setApproved($approved)
+    {
+        $this->approved = $approved;
+
+        return $this;
+    }
+
+    /**
+     * Get approved
+     *
+     * @return boolean
+     */
+    public function getApproved()
+    {
+        return $this->approved;
     }
 }

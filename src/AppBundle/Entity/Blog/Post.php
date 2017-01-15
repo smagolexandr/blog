@@ -77,6 +77,13 @@ class Post
     private $image;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="approved", type="boolean", options={"default": false})
+     */
+    private $approved = false;
+
+    /**
      * @var \DateTime $createdAt
      *
      * @Gedmo\Timestampable(on="create")
@@ -403,5 +410,29 @@ class Post
     public function getTags()
     {
         return $this->tags;
+    }
+
+    /**
+     * Set approved
+     *
+     * @param boolean $approved
+     *
+     * @return Post
+     */
+    public function setApproved($approved)
+    {
+        $this->approved = $approved;
+
+        return $this;
+    }
+
+    /**
+     * Get approved
+     *
+     * @return boolean
+     */
+    public function getApproved()
+    {
+        return $this->approved;
     }
 }
