@@ -18,12 +18,14 @@ AppBundle\Entity\Blog\Post:
         user: '@user*'
         comments: ['@blogcomment*']
         tags: ['@blogtag*']
+        approved: 1
 
 AppBundle\Entity\Blog\Comment:
     blogcomment_{1..100}:
         content: <text(200)>
         user: '@user*'
         post: '@blogpost*'
+        approved: 1
 
 AppBundle\Entity\Blog\Tag:
     blogtag_{1..100}:
