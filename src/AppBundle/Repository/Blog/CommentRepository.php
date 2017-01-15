@@ -22,6 +22,19 @@ class CommentRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
+    public function getUnapprovedComments()
+    {
+        return $this->getEntityManager()
+            ->createQuery('SELECT c, p, u
+                             FROM AppBundle:Blog\Comment c
+                             JOIN c.post p
+                             JOIN c.user u
+                             WHERE c.approved = 0 AND p.approved = 1
+                             ORDER BY c.createdAt DESC
+                            ')
+            ->getResult();
+    }
+
     public function getLastComments()
     {
         return $this->getEntityManager()

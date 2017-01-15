@@ -6,6 +6,7 @@ use AppBundle\Entity\User;
 use AppBundle\Entity\Blog\Post;
 use AppBundle\Entity\Blog\Comment;
 use AppBundle\Entity\Blog\Tag;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -49,6 +50,7 @@ class BlogController extends Controller
      * @Route("/post/{slug}", name="single_post")
      * @ParamConverter("post", class="AppBundle:Blog\Post", options={"slug" = "slug"})
      * @Template()
+     * @Security("is_granted('VIEW', post)")
      */
     public function singlePostAction(Post $post, Request $request)
     {
@@ -76,7 +78,7 @@ class BlogController extends Controller
         $comments = $em->getRepository('AppBundle:Blog\Comment')->getCommentsSorted($post->getId());
 
         foreach ($comments as $comment) {
-            if ($this->isGranted('EDIT', $comment) || $this->isGranted('EDIT', $post)) {
+            if ($this->isGranted('EDIT', $comment)) {
                 $deleteForm[$comment->getId()] = $this->createDeleteCommentForm($comment)->createView();
             }
         }
@@ -87,6 +89,7 @@ class BlogController extends Controller
 
         return $response += [
             'post' => $post,
+            'comments' => $comments,
             'deleteForm' => $deleteForm
         ];
     }
@@ -177,7 +180,6 @@ class BlogController extends Controller
 
             $em->persist($post);
             $em->flush();
-
             }
         $url = $this->generateUrl('homepage');
         return $this->redirect($url);
@@ -189,7 +191,7 @@ class BlogController extends Controller
 
 
     /**
-     * @Route("/edit/{post}", name="blog_post_edit")
+     * @Route("/edit/{id}", name="blog_post_edit")
      * @Template("AppBundle:Blog:edit.html.twig")
      */
     public function editPostAction(Request $request, Post $post)
@@ -212,7 +214,7 @@ class BlogController extends Controller
                         $tag->addPost($post);
                     }
                 }
-
+                $post->setApproved(false);
                 $em->persist($post);
                 $em->flush();
                 $url = $this->generateUrl('single_post', ['slug'=>$post->getSlug()] );
@@ -260,6 +262,10 @@ class BlogController extends Controller
         return new RedirectResponse($url);
     }
 
+    /**
+     * @param Comment $comment
+     * @return \Symfony\Component\Form\FormInterface
+     */
     private function createDeleteCommentForm(Comment $comment)
     {
         return $this->createFormBuilder()

@@ -7,6 +7,7 @@ var gulp = require('gulp'),
 gulp.task('less', function() {
     return gulp.src([
         'web-src/less/style.less',
+        'web-src/less/admin/admin.less'
     ])
         .pipe(less({compress: true}))
         .pipe(gulp.dest('web/css/'));
@@ -16,6 +17,8 @@ gulp.task('css', function() {
     return gulp.src([
         'bower_components/bootstrap/dist/css/bootstrap.css',
         'bower_components/chosen/chosen.css',
+        'bower_components/AdminLTE/dist/css/AdminLTE.min.css',
+        'bower_components/AdminLTE/dist/css/skins/skin-blue.min.css',
         'web-src/css/**/*.css'
     ])
         .pipe(less({compress: true}))
@@ -44,6 +47,7 @@ gulp.task('pages-js', function() {
         'bower_components/jquery/dist/jquery.js',
         'bower_components/bootstrap/dist/js/bootstrap.js',
         'bower_components/chosen/chosen.jquery.js',
+        'bower_components/AdminLTE/dist/js/app.min.js',
         'web-src/js/**/*.js'
     ])
         .pipe(minifyJs())
