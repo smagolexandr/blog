@@ -180,7 +180,7 @@ class BlogController extends Controller
 
             }
         $url = $this->generateUrl('homepage');
-        $this->redirect($url);
+        return $this->redirect($url);
         } else {
             throw $this->createAccessDeniedException('Access denied.');
         }
@@ -215,7 +215,8 @@ class BlogController extends Controller
 
                 $em->persist($post);
                 $em->flush();
-
+                $url = $this->generateUrl('single_post', ['slug'=>$post->getSlug()] );
+                return new RedirectResponse($url);
             }
             return [
                 'form' => $form->createView()
