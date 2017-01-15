@@ -15,6 +15,7 @@ gulp.task('less', function() {
 gulp.task('css', function() {
     return gulp.src([
         'bower_components/bootstrap/dist/css/bootstrap.css',
+        'bower_components/chosen/chosen.css',
         'web-src/css/**/*.css'
     ])
         .pipe(less({compress: true}))
@@ -42,6 +43,7 @@ gulp.task('pages-js', function() {
     return gulp.src([
         'bower_components/jquery/dist/jquery.js',
         'bower_components/bootstrap/dist/js/bootstrap.js',
+        'bower_components/chosen/chosen.jquery.js',
         'web-src/js/**/*.js'
     ])
         .pipe(minifyJs())
