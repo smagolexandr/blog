@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Blog\Post;
 use AppBundle\Entity\Blog\Comment;
+use AppBundle\Entity\Blog\Tag;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -12,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 
@@ -103,8 +105,9 @@ class BlogController extends Controller
             $em->remove($post);
             $em->flush();
             return $this->redirect($this->generateUrl('homepage'));
+        } else{
+            throw $this->createAccessDeniedException('Access denied.');
         }
-        throw $this->createAccessDeniedException('Access denied.');
     }
 
     /**
@@ -142,9 +145,7 @@ class BlogController extends Controller
             ));
 
         return ['form'=>$form->createView()];
-        }
-        else
-        {
+        } else {
             throw $this->createAccessDeniedException('Access denied.');
         }
     }
@@ -178,9 +179,12 @@ class BlogController extends Controller
             $em->flush();
 
             }
-            $url = $this->generateUrl('homepage');
+        $url = $this->generateUrl('homepage');
+        return $this->redirect($url);
+        } else {
+            throw $this->createAccessDeniedException('Access denied.');
         }
-        throw $this->createAccessDeniedException('Access denied.');
+
     }
 
 
@@ -211,7 +215,8 @@ class BlogController extends Controller
 
                 $em->persist($post);
                 $em->flush();
-
+                $url = $this->generateUrl('single_post', ['slug'=>$post->getSlug()] );
+                return new RedirectResponse($url);
             }
             return [
                 'form' => $form->createView()
@@ -292,10 +297,34 @@ class BlogController extends Controller
                     'slug' => $post->getSlug()
                 ))
             );
-        }
-        else
-        {
+        } else {
             throw $this->createAccessDeniedException('Access denied.');
         }
+    }
+
+    /**
+     * @Route("/tag/new", name="new_tag", options={"expose"=true})
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function newTagAction(Request $request)
+    {
+        $tagName = $request->get('tag');
+        $em = $this->getDoctrine()->getManager();
+
+        if($tagName){
+            $tag = new Tag();
+            $tag->setName($tagName);
+            $em->persist($tag);
+            $em->flush();
+
+            return new JsonResponse([
+                'id' => $tag->getId(),
+                'name'=> $tag->getName()
+            ]);
+        }
+
+        return new JsonResponse('Не правильное имя тега', 401);
     }
 }
