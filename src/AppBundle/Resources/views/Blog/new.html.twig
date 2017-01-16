@@ -1,0 +1,44 @@
+{% extends 'AppBundle:Blog:layout.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('/css/chosen.css') }}">
+{% endblock %}
+
+{% block main_column %}
+    {{ form_start(form) }}
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/chosen.jquery.js')}}"></script>
+    <script>
+        $(document).ready(function(){
+            $(".chosen-select").chosen({no_results_text: "Добавить тег: "});
+
+            $(document).on('click', '.chosen-drop .no-results', function(){
+                newTag($('.chosen-drop .no-results span').html());
+            });
+        });
+        function newTag(tag) {
+            var route = "{{ path('new_tag') | escape('js') }}";
+            $.ajax({
+                type: 'POST',
+                url: route,
+                data: {'tag':tag},
+                success: function (data) {
+                    console.log(data);
+                    updateChoisen(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+
+        function updateChoisen(tag) {
+            $('.chosen-select').append("<option value='"+tag.id+"' selected>"+tag.name+"</option>");
+            $('.chosen-select').trigger("chosen:updated");
+            $(".search-field input").focus()
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'AppBundle:Blog:layout.html.twig' %}
+
+{% block main_column %}
+
+    {% for post in posts %}
+
+        <div class="col-md-12 blogShort" style=" padding-bottom: 10px">
+            <h1>{{ post.title }}
+                    <small style="float:right;">
+                        {% if deleteForm[post.id] is defined %}
+                        <a href="{{ path('blog_post_edit', {'id':post.id}) }}" class="btn btn-xs btn-primary">edit</a>
+                        <button class="btn btn-xs btn-danger hidden">
+                        {{ form_start(deleteForm[post.id],
+                        {attr : {onsubmit: 'return confirm("Вы действительно хотите удалить пост?");' }}) }}
+                            {{ form_widget(deleteForm[post.id].submit, {'label':'delete'}) }}
+                            {{ form_end(deleteForm[post.id]) }}
+                        </button>
+                        {% endif %}
+                    </small>
+            </h1>
+            <i class="fa fa-clock-o fa-fw"></i> {{ post.createdAt | date('d.m.Y H:i:s', 'Europe/Kiev') }} <i class="fa fa-eye"></i> {{ post.views }} <i class="fa fa-comments-o"></i> {{ post.comments | length }}
+
+            <hr>
+            {% if post.image %}
+                <div class="row">
+                    <img class="col-xs-12 " src="{{ post.image }}">
+                </div>
+            <hr>
+            {% endif %}
+
+            <article style="text-align: justify;"><p>
+                    {% if post.content|length > 249 %}
+                        {{ post.content | slice(0, 250) ~ "..." }}
+                    {% else %}
+                        {{ post.content }}
+                    {% endif %}
+            </p></article>
+
+            <div>
+                {% if post.tags %}
+                    <ul class="tags">
+                        {%  for tag in post.tags %}
+                                <li><a href="{{ path('homepage', {'tag':tag.name}) }}" class="tag">{{ tag.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <a class="btn btn-blog pull-right marginBottom10" href="{{ path('single_post', {'slug':post.slug}) }}">READ MORE</a>
+            </div>
+
+        </div>
+    {% endfor %}
+    <ul class="pager">
+        {{ knp_pagination_render(posts) }}
+    </ul>
+{% endblock %}
+

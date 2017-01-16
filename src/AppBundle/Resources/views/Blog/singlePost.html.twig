@@ -1,0 +1,99 @@
+{% extends 'AppBundle:Blog:layout.html.twig' %}
+
+{% block main_column %}
+
+    <!-- Blog Post -->
+
+    <!-- Title -->
+    <h1>{{ post.title }}</h1>
+
+    <!-- Author -->
+    <p class="lead">
+        by <a href="#">
+            {% if post.user.nickname is not empty %}
+                {{ post.user.nickname }}
+            {% else %}
+                {{ post.user.username }}
+            {% endif %}
+        </a>
+    </p>
+
+    <hr>
+
+    <!-- Date/Time -->
+    <p><span class="glyphicon glyphicon-time"></span> Posted on {{ post.createdAt | date('d.m.Y h:m') }} <i class="fa fa-eye"></i> {{ post.views }}</p>
+
+    <hr>
+
+    <!-- Preview Image -->
+    <img class="img-responsive" src="{{ post.image }}" alt="">
+
+    <hr>
+
+    <!-- Post Content -->
+    <p class="lead">small desc</p>
+    <span>
+        {{ post.content }}
+    </span>
+    <hr>
+    <!-- Post Tags -->
+    <div>
+        {% for tag in post.tags %}
+            <a class="label label-primary" href="{{ path('homepage', {'tag':tag.name}) }}">
+                {{ tag.name }}
+            </a>
+        {% endfor %}
+    </div>
+    <hr>
+
+    <!-- Blog Comments -->
+
+    <!-- Comments Form -->
+    <div class="well">
+        <h4>Leave a Comment:</h4>
+        {% if newComment is defined %}
+            {{ form_start(newComment) }}
+            <div class="form-group">
+                {{ form_widget(newComment.content) }}
+            </div>
+            {{ form_widget(newComment.submit, {'attr':{'class':'btn btn-primary'}}) }}
+            {{ form_end(newComment) }}
+        {% else %}
+            <div>Что бы оставить комментарий нужно <a href="{{ path('login') }}">авторизироваться.</a></div>
+        {% endif %}
+
+    </div>
+
+
+    <hr>
+
+    <!-- Posted Comments -->
+
+    {% for comment in comments %}
+        <div class="media">
+            <a class="pull-left" href="#">
+                <img class="media-object" src="{{ comment.user.avatar }}" alt="" style="height: 64px;">
+            </a>
+            <div class="media-body">
+                <h4 class="media-heading">
+                    {% if comment.user.nickname is not empty %}
+                        {{ comment.user.nickname }}
+                    {% else %}
+                        {{ comment.user.username }}
+                    {% endif %}
+                    <small>{{ comment.createdAt | date('d.m.Y H:i:s', 'Europe/Kiev') }}
+                    {% if deleteForm[comment.id] is defined %}
+                        {{ form_start(deleteForm[comment.id],
+                        {attr : {onsubmit: 'return confirm("Вы действительно хотите удалить комментарий?");' , 'style':'display:inline;'}}) }}
+                        {{ form_widget(deleteForm[comment.id].submit) }}
+                        {{ form_end(deleteForm[comment.id]) }}
+                    {% endif %}
+                    </small>
+                </h4>
+                {{ comment.content }}
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}
+

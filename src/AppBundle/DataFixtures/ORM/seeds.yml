@@ -1,0 +1,33 @@
+#################### USER ########################
+
+AppBundle\Entity\User:
+    user_{1..15}:
+        username (unique): <word(10)>
+        password: <password()>
+        nickname: <lastName()> <firstName()>
+        salt:   <word(10)>
+        email (unique): <email()>
+
+#################### BLOG #########################
+
+AppBundle\Entity\Blog\Post:
+    blogpost_{1..20}:
+        title (unique): <text(20)>
+        content: <text(1000)>
+        image:  <imageUrl(900, 300)>
+        user: '@user*'
+        comments: ['@blogcomment*']
+        tags: ['@blogtag*']
+        approved: 1
+
+AppBundle\Entity\Blog\Comment:
+    blogcomment_{1..100}:
+        content: <text(200)>
+        user: '@user*'
+        post: '@blogpost*'
+        approved: 1
+
+AppBundle\Entity\Blog\Tag:
+    blogtag_{1..100}:
+        name: <word(10)>_<numberBetween(1, 100000)>
+        post: ['@blogpost*']
