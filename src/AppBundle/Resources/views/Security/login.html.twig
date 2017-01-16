@@ -13,9 +13,6 @@
                                     {{ error.messageKey|trans(error.messageData) }}
                                 </div>
                             {% endif %}
-
-
-
                             <div class="form-group">
                                 <label for="email" class="col-md-4 control-label">login</label>
 
@@ -37,6 +34,9 @@
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fa fa-btn fa-sign-in"></i> Login
                                     </button>
+                                    <a href="{{ path('homepage') }}" class="btn btn-primary">
+                                        <i class="fa fa-btn fa-home"></i> Home
+                                    </a>
                                 </div>
                             </div>
                         </form>
