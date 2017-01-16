@@ -22,7 +22,7 @@
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				{% if app.user %}
-					<li><a href="#">
+					<li><a href="{{ path('profile_page') }}">
 							{% if app.user.nickname %}
 								{{ app.user.nickname }}
 							{% else %}
