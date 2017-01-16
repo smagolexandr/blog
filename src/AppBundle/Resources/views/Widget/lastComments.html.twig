@@ -5,10 +5,15 @@
         </h4>
         {% for comment in comments %}
             <div class="message col-md-12 col-sm-6  nopadding">
-                <div class="col-md-2 col-sm-3 nopadding">
-                    {% if comment.user.avatar %}<img src="{{ comment.user.avatar }}">{% endif %}
-                </div>
-                <div class="col-md-10 col-sm-9 content">
+                    {% if comment.user.avatar %}
+                        <div class="col-md-2 col-sm-3 nopadding">
+                                <img src="{{ comment.user.avatar }}">
+                        </div>
+
+                    <div class="col-md-10 col-sm-9 content">
+                    {% else %}
+                    <div class="col-md-12 col-sm-12 content">
+                    {% endif %}
                     <div><span class="author-nick">
                             {% if comment.user.nickname is not empty %}
                                 {{ comment.user.nickname }}
