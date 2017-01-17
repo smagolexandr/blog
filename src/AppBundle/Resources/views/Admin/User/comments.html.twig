@@ -1,0 +1,43 @@
+{% extends 'AppBundle:Admin/User:profile.html.twig' %}
+
+{% block comments %}
+    {% if comments is not empty %}
+        {% for comment in comments %}
+            <!-- Post -->
+            <div class="post">
+                <div class="user-block">
+                    {% if comment.post.image %}
+                        <img class="img-circle img-bordered-sm" src="{{ vich_uploader_asset(comment.post, "imageFile") }}" alt="post image">
+                    {% else %}
+                        <img class="img-circle img-bordered-sm"  src="{{ vich_uploader_asset(app.user, "imageFile") }}" alt="User profile picture">
+                    {% endif %}
+                    <span class="username">
+                            <a href="#">
+                                {{ comment.post.title }}
+                            </a>
+                           <a href="{{ path('comment_delete',{'id':comment.id}) }}" class="pull-right btn-box-tool"><i class="fa fa-times"></i></a>
+                        {#<a href="{{ path('blog_post_edit',{'id':post.id}) }}" class="pull-right btn-box-tool"><i class="fa fa-pencil"></i></a>#}
+                                                            </span>
+                    <span class="description">{{ comment.createdAt | date("d/m/Y  H:i")  }}
+                        {% if comment.approved %}
+                            <i class="fa fa-check-circle"></i>
+                                                            {% else %}
+                            <i class="fa fa-times-circle"></i>
+                        {% endif %}
+                                                            </span>
+                </div>
+                <!-- /.user-block -->
+                <p>
+                    {{ comment.content }}
+                </p>
+            </div>
+            <!-- /.post -->
+        {% endfor %}
+        <ul class="pager">
+            {{ knp_pagination_render(comments) }}
+        </ul>
+    {% else %}
+        <h1>No posts yet</h1>
+    {% endif %}
+
+{% endblock %}

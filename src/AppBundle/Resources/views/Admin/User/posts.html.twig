@@ -32,12 +32,12 @@
                     {{ post.content | slice(0, 250) ~ "..." }}
                 </p>
                 {% if post.comments %}
-                <ul class="list-inline">
-                    {#<li><a href="#" class="link-black text-sm"><i class="fa fa-share margin-r-5"></i> Share</a></li>#}
-                    <li><i class="fa fa-comments-o margin-r-5"></i>
-                        {{ post.comments|length }}
-                    </li>
-                </ul>
+                    <ul class="list-inline">
+                        {#<li><a href="#" class="link-black text-sm"><i class="fa fa-share margin-r-5"></i> Share</a></li>#}
+                        <li><i class="fa fa-comments-o margin-r-5"></i>
+                            {{ post.comments|length }}
+                        </li>
+                    </ul>
                 {% endif %}
 
                 {#<input class="form-control input-sm" type="text" placeholder="Type a comment">#}

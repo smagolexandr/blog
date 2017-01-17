@@ -1,11 +1,11 @@
 {% extends(':Admin:base.html.twig') %}
 {% block titlePage %}<h1>Пользователи</h1>{% endblock %}
-{#{% block breadcrumbs %}#}
-    {#{{ parent() }}#}
-    {#<li class="active">#}
-        {#<a href="{{ path('admin_user_index') }}">Користувачі</a>#}
-    {#</li>#}
-{#{% endblock breadcrumbs %}#}
+{% block breadcrumbs %}
+    {{ parent() }}
+    <li class="active">
+        <a href="{{ path('admin_user_index') }}">Users</a>
+    </li>
+{% endblock breadcrumbs %}
 
 {% block content %}
     <div class="page-content box box-primary">
