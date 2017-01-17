@@ -23,7 +23,8 @@
             <hr>
             {% if post.image %}
                 <div class="row">
-                    <img class="col-xs-12 " src="{{ post.image }}">
+                    {#<img class="col-xs-12 " src="{{ post.image }}">#}
+                    <img class="col-xs-12 " src="{{ vich_uploader_asset(post, "imageFile") }}">
                 </div>
             <hr>
             {% endif %}

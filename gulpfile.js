@@ -41,6 +41,13 @@ gulp.task('images', function () {
         .pipe(gulp.dest('web/images/'))
 });
 
+gulp.task('uploads', function () {
+    return gulp.src([
+        'web-src/uploads/**/*'
+    ])
+        .pipe(gulp.dest('web/uploads/'))
+});
+
 
 gulp.task('pages-js', function() {
     return gulp.src([
@@ -60,7 +67,7 @@ gulp.task('clean', function () {
 });
 
 gulp.task('default', ['clean'], function () {
-    var tasks = ['less', 'css', 'fonts', 'pages-js', 'images'];
+    var tasks = ['less', 'css', 'fonts', 'pages-js', 'images', 'uploads'];
     tasks.forEach(function (val) {
         gulp.start(val);
     });

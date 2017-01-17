@@ -17,7 +17,7 @@ class CommentRepository extends \Doctrine\ORM\EntityRepository
                             FROM AppBundle:Blog\Comment c
                             LEFT JOIN c.user u
                             WHERE c.post = :post AND c.approved = 1
-                            ORDER BY c.createdAt ASC')
+                            ORDER BY c.createdAt DESC')
             ->setParameter('post', $post_id)
             ->getResult();
     }
@@ -43,7 +43,7 @@ class CommentRepository extends \Doctrine\ORM\EntityRepository
                             LEFT JOIN c.user u
                             LEFT JOIN c.post p
                             WHERE c.approved = 1 AND p.approved = 1
-                            ORDER BY c.createdAt ASC
+                            ORDER BY c.createdAt DESC
                             ')
             ->setMaxResults(5)
             ->getResult();

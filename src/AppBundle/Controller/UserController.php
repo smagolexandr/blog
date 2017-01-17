@@ -18,35 +18,26 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  */
 class UserController extends Controller{
     /**
-     * @Route("/", name="profile_page")
-     * @Template("AppBundle:User:index.html.twig")
+     * @Route("/", name="user_profile_page")
+     * @Template("AppBundle:User:posts.html.twig")
+     * @Method("GET")
      */
-    public function singlePostAction(Request $request)
+    public function userProfileAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository('AppBundle:User')->find($this->getUser()->getId());
-        $form = $this->createForm('AppBundle\Form\User\UserProfileType', $user,
-            [
-                'action'=>$this->generateUrl('user_update_profile_handler'),
-                'method'=>'POST'
-            ])
-            ->add('Save', SubmitType::class, array(
-                'attr'=> ['class'=> 'btn btn-primary']
-            ));
-
-//        if ($request->query->get('updated')) {
-//            $response['updated'] = true;
-//        }
+        $posts = $em->getRepository('AppBundle:User')->getUserProfilePosts($this->getUser()->getId());
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate($posts, $request->query->getInt('page', 1), 5);
 
         return [
-            'form'=>$form->createView()
+            'posts' => $pagination
         ];
     }
 
     /**
-     * @Route("/prof", name="user_update_profile_handler")
-     * @Template("AppBundle:User:profile.html.twig")
-     * Method("POST")
+     * @Route("/update", name="user_update_profile")
+     * @Template("AppBundle:User:update.html.twig")
+     * Method("GET|POST")
      */
     public function profileHandlerAction(Request $request){
         $em = $this->getDoctrine()->getManager();
@@ -54,19 +45,35 @@ class UserController extends Controller{
 
         $form = $this->createForm('AppBundle\Form\User\UserProfileType', $user,
             [
-                'action'=>$this->generateUrl('user_update_profile_handler'),
+                'action'=>$this->generateUrl('user_update_profile'),
                 'method'=>'POST'
             ])
-            ->add('Сохранить', SubmitType::class, array(
-                'attr'=> ['class'=> 'btn pull-right btn-warning']
+            ->add('Save', SubmitType::class, array(
+                'attr'=> ['class'=> 'btn pull-right btn-primary']
             ));
         $form->handleRequest($request);
         if ($form->isValid()) {
             $em->persist($user);
             $em->flush();
 
+            $url = $this->generateUrl('user_update_profile');
+            return new RedirectResponse($url);
         }
-        $url = $this->generateUrl('profile_page');
-        return new RedirectResponse($url);
+        return ['form' => $form->createView()];
     }
+
+    /**
+     * @Route("/comments", name="user_comments")
+     * @Template("AppBundle:User:comments.html.twig")
+     */
+    public function profileCommentsAction(Request $request){
+        $em = $this->getDoctrine()->getManager();
+
+        $comments = $em->getRepository('AppBundle:User')->getUserProfileComments($this->getUser()->getId());
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate($comments, $request->query->getInt('page', 1), 5);
+
+        return ['comments' => $pagination];
+    }
+
 }

@@ -7,7 +7,7 @@
             <div class="message col-md-12 col-sm-6  nopadding">
                     {% if comment.user.avatar %}
                         <div class="col-md-2 col-sm-3 nopadding">
-                                <img src="{{ comment.user.avatar }}">
+                                <img src="{{ vich_uploader_asset(comment.user, "imageFile") }}">
                         </div>
 
                     <div class="col-md-10 col-sm-9 content">

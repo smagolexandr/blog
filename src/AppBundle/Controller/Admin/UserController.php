@@ -39,33 +39,69 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/show/{id}", name="admin_user_show")
-     * @Template()
-     * @return array
+     * @Route("/{id}/", name="admin_user_show")
+     * @Template("AppBundle:Admin/User:posts.html.twig")
+     * @Method("GET")
      */
     public function showAction(User $user, Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-//        $method = $request->getMethod();
-//        if ($request->getMethod() == "POST"){
-//
-//            if($request->get('role') == 'admin'){
-//                $user->addRole("ROLE_SUPER_ADMIN");
-//            } else if ($user->hasRole("ROLE_SUPER_ADMIN")){
-//                $user->removeRole("ROLE_SUPER_ADMIN");
-//            }
-//
-//            if ($request->get('ban')){
-//                $user->setLocked(true);
-//            } else {
-//                $user->setLocked(false);
-//            }
-//
-//            $em->persist($user);
-//            $em->flush();
-//        }
 
-        return ['user'=>$user];
+        $em = $this->getDoctrine()->getManager();
+        $posts = $em->getRepository('AppBundle:User')->getUserProfilePosts($user->getId());
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate($posts, $request->query->getInt('page', 1), 5);
+
+        return [
+            'user'=>$user,
+            'posts' => $pagination,
+        ];
+    }
+
+    /**
+     * @Route("/{id}/comments", name="admin_user_comments")
+     * @Template("AppBundle:Admin/User:comments.html.twig")
+     */
+    public function profileCommentsAction(User $user,Request $request){
+        $em = $this->getDoctrine()->getManager();
+
+        $comments = $em->getRepository('AppBundle:User')->getUserProfileComments($user->getId());
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate($comments, $request->query->getInt('page', 1), 5);
+
+        return [
+            'user'=>$user,
+            'comments' => $pagination
+        ];
+    }
+
+    /**
+     * @Route("/{id}/update", name="admin_user_update")
+     * @Template("AppBundle:Admin/User:update.html.twig")
+     * Method("GET|POST")
+     */
+    public function profileHandlerAction(User $user,Request $request){
+        $em = $this->getDoctrine()->getManager();
+
+        $form = $this->createForm('AppBundle\Form\User\UserProfileType', $user,
+            [
+                'action'=>$this->generateUrl('admin_user_update', array('id' => $user->getId())),
+                'method'=>'POST'
+            ])
+            ->add('Save', SubmitType::class, array(
+                'attr'=> ['class'=> 'btn btn-primary']
+            ));
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $em->persist($user);
+            $em->flush();
+
+            $url = $this->generateUrl('user_update_profile');
+            return new RedirectResponse($url);
+        }
+        return [
+            'user' => $user,
+            'form' => $form->createView()
+        ];
     }
 
     /**

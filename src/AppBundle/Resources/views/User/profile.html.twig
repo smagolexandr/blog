@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('/css/AdminLTE.min.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+
+            <!-- Main content -->
+            <section class="content">
+
+                <div class="row">
+                    <div class="col-md-3">
+
+                        <!-- Profile Image -->
+                        <div class="box box-primary">
+                            <div class="box-body box-profile">
+                                <img class="profile-user-img img-responsive img-circle" src="{{ vich_uploader_asset(app.user, "imageFile") }}" alt="User profile picture">
+                                {#{{ dump( vich_uploader_asset(app.user, "imageFile") ) }}#}
+                                {#{{ dump(app.user) }}#}
+                                {% if app.user.nickname is defined %}
+                                    <h3 class="profile-username text-center">
+                                        {{ app.user.nickname }}
+                                    </h3>
+
+                                    <p class="text-muted text-center">{{ app.user.username }}</p>
+                                {% else %}
+                                    <h3 class="profile-username text-center">
+                                        {{ app.user.username }}
+                                    </h3>
+                                {% endif %}
+
+                                {#<ul class="list-group list-group-unbordered">#}
+                                {#<li class="list-group-item">#}
+                                {#<b>Posts</b> <span class="pull-right label label-primary">{{ app.user.posts | length }}</span>#}
+                                {#</li>#}
+                                {#<li class="list-group-item">#}
+                                {#<b>Comments</b> <span class="pull-right label label-primary">{{ app.user.comments | length }}</span>#}
+                                {#</li>#}
+                                {#<li class="list-group-item">#}
+                                {#<b>Registration date</b> <span class="pull-right label label-primary">{{ app.user.createdAt | date('d.m.Y H:i') }}</span>#}
+                                {#</li>#}
+                                {#</ul>#}
+
+                                {#<a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>#}
+                            </div>
+                            <!-- /.box-body -->
+                            <hr>
+                            {#<div class="box-header with-border">#}
+                            {#<h3 class="box-title">About Me</h3>#}
+                            {#</div>#}
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <strong><i class="fa fa-book margin-r-5"></i>E-mail</strong>
+
+                                <p class="text-muted">
+                                    {{ app.user.email }}
+                                </p>
+
+                                <hr>
+
+                                <strong><i class="fa fa-map-marker margin-r-5"></i>Registered</strong>
+
+                                <p class="text-muted">{{ app.user.createdAt | date("d.m.Y  H:i") }}</p>
+
+                                {#<hr>#}
+
+                                {#<strong><i class="fa fa-pencil margin-r-5"></i> Skills</strong>#}
+
+                                {#<p>#}
+                                {#<span class="label label-danger">UI Design</span>#}
+                                {#<span class="label label-success">Coding</span>#}
+                                {#<span class="label label-info">Javascript</span>#}
+                                {#<span class="label label-warning">PHP</span>#}
+                                {#<span class="label label-primary">Node.js</span>#}
+                                {#</p>#}
+
+                                {#<hr>#}
+
+                                {#<strong><i class="fa fa-file-text-o margin-r-5"></i> Notes</strong>#}
+
+                                {#<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</p>#}
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                        <!-- /.box -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-9">
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                <li class="{{ 'user_profile_page' in app.request.get('_route') ? 'active' : '' }}"><a href="{{ path('user_profile_page') }}">
+                                        Posts <span class="label label-primary">{{ app.user.posts | length }}</span>
+                                    </a></li>
+                                <li class="{{ 'user_comments' in app.request.get('_route') ? 'active' : '' }}"><a href="{{ path('user_comments') }}" >
+                                        Comments <span class="label label-primary">{{ app.user.comments | length }}</span>
+                                    </a></li>
+                                <li class="{{ 'user_update_profile' in app.request.get('_route') ? 'active' : '' }}"><a href="{{ path('user_update_profile') }}">Update</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+
+                                <div class="{{ 'user_profile_page' in app.request.get('_route') ? 'active' : '' }} tab-pane" id="posts">
+                                    {% block posts %}
+                                    {% endblock %}
+                                </div>
+
+                                <div class="{{ 'user_comments' in app.request.get('_route') ? 'active' : '' }} tab-pane" id="comments">
+                                    {% block comments %}
+                                    {% endblock %}
+                                </div>
+
+                                <div class="{{ 'user_update_profile' in app.request.get('_route') ? 'active' : '' }} tab-pane" id="update">
+                                    {% block update %}
+                                    {% endblock %}
+                                </div>
+
+
+                                <!-- /.tab-pane -->
+                            </div>
+                            <!-- /.tab-content -->
+                        </div>
+                        <!-- /.nav-tabs-custom -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+
+            </section>
+            <!-- /.content -->
+        </div>
+    </div>
+{% endblock %}
+
+
