@@ -5,6 +5,8 @@ namespace AppBundle\Entity\Blog;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * Post
@@ -12,6 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="post")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\Blog\PostRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
+ * @Vich\Uploadable
  */
 class Post
 {
@@ -75,6 +78,11 @@ class Post
      * @ORM\Column(name="image", type="string", length=255, nullable=true)
      */
     private $image;
+
+    /**
+     * @Vich\UploadableField(mapping="post_image", fileNameProperty="image")
+     */
+    private $imageFile;
 
     /**
      * @var boolean
@@ -434,5 +442,24 @@ class Post
     public function getApproved()
     {
         return $this->approved;
+    }
+
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+
+        if ($image) {
+            $this->updatedAt = new \DateTime('now');
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
     }
 }

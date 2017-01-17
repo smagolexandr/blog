@@ -81,9 +81,9 @@ class User implements UserInterface, \Serializable
     private $updatedAt;
 
     /**
-     * @ORM\Column(name="avatar", type="string", length=255, nullable=true, options={"default" : "/images/base/avatar.png"})
+     * @ORM\Column(name="avatar", type="string", length=255, nullable=true, options={"default" : "avatar.jpeg"})
      */
-    protected $avatar="avatar.png";
+    protected $avatar="avatar.jpeg";
 
     /**
      * @Vich\UploadableField(mapping="user_avatar", fileNameProperty="avatar")

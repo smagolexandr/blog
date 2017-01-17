@@ -7,7 +7,7 @@
                 <div class="post">
                     <div class="user-block">
                         {% if comment.post.image %}
-                            <img class="img-circle img-bordered-sm" src="{{ comment.post.image }}" alt="post image">
+                            <img class="img-circle img-bordered-sm" src="{{ vich_uploader_asset(comment.post, "imageFile") }}" alt="post image">
                         {% else %}
                             <img class="img-circle img-bordered-sm"  src="{{ vich_uploader_asset(app.user, "imageFile") }}" alt="User profile picture">
                         {% endif %}

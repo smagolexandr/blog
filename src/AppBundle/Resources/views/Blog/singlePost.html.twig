@@ -26,7 +26,7 @@
     <hr>
 
     <!-- Preview Image -->
-    <img class="img-responsive" src="{{ post.image }}" alt="">
+    <img class="img-responsive" src="{{ vich_uploader_asset(post, "imageFile") }}" alt="">
 
     <hr>
 
@@ -72,7 +72,7 @@
     {% for comment in comments %}
         <div class="media">
             <a class="pull-left" href="#">
-                <img class="media-object" src="{{ comment.user.avatar }}" alt="" style="height: 64px;">
+                <img class="media-object" src="{{ vich_uploader_asset(comment.user, "imageFile") }}" alt="" style="height: 64px;">
             </a>
             <div class="media-body">
                 <h4 class="media-heading">

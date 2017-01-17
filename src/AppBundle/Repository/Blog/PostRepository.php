@@ -63,7 +63,7 @@ class PostRepository extends \Doctrine\ORM\EntityRepository
             ->createQuery('SELECT p
                             FROM AppBundle:Blog\Post p
                             WHERE p.approved = 1
-                            ORDER BY p.views ASC')
+                            ORDER BY p.views DESC')
             ->setMaxResults(5)
             ->getResult();
     }

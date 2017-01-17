@@ -7,7 +7,7 @@
             <div class="message col-md-12 col-sm-6  nopadding">
                 {% if post.image %}
                 <div class="col-md-3 col-sm-4 nopadding">
-                    <img src="{{ post.image }}" alt="{{ post.title }}">
+                    <img src="{{ vich_uploader_asset(post, "imageFile") }}" alt="{{ post.title }}">
                 </div>
                 <div class="col-md-9 col-sm-8 content">
                 {% else %}

@@ -29,7 +29,6 @@ class UserController extends Controller{
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate($posts, $request->query->getInt('page', 1), 5);
 
-
         return [
             'posts' => $pagination
         ];

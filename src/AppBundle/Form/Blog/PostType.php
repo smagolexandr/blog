@@ -34,8 +34,7 @@ class PostType extends AbstractType
                 'required' => false,
                 'attr' => array('class' => 'form-control chosen-select')
             ))
-            ->add('image', TextType::class, array(
-                'label' => "Изображение",
+            ->add('imageFile', FileType::class, array(
                 'required' => false,
                 'attr' => array('class' => 'form-control')
             ))
