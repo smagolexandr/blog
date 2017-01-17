@@ -14,7 +14,6 @@ AppBundle\Entity\Blog\Post:
     blogpost_{1..20}:
         title (unique): <text(20)>
         content: <text(1000)>
-        image:  <imageUrl(900, 300)>
         user: '@user*'
         comments: ['@blogcomment*']
         tags: ['@blogtag*']

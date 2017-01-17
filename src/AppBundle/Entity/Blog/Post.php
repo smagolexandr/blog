@@ -60,7 +60,7 @@ class Post
     private $views = 0;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Blog\Comment", mappedBy="post")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Blog\Comment", mappedBy="post", cascade={"remove"})
      */
     private $comments;
 

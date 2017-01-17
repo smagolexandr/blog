@@ -10,4 +10,31 @@ namespace AppBundle\Repository;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getUserProfilePosts($id)
+    {
+        return $this->getEntityManager()
+            ->createQuery('SELECT  p, u, c
+                             FROM AppBundle:Blog\Post p
+                             JOIN p.user u
+                             LEFT JOIN p.comments c
+                             WHERE p.user = :user
+                             ORDER BY p.createdAt DESC
+                            ')
+            ->setParameter('user', $id)
+            ->getResult();
+    }
+
+    public function getUserProfileComments($id)
+    {
+        return $this->getEntityManager()
+            ->createQuery('SELECT  c, p,u
+                             FROM AppBundle:Blog\Comment c
+                             JOIN c.user u
+                             JOIN  c.post p                         
+                             WHERE c.user = :user
+                             ORDER BY c.createdAt DESC
+                            ')
+            ->setParameter('user', $id)
+            ->getResult();
+    }
 }

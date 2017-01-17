@@ -7,6 +7,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * User
@@ -14,8 +16,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @UniqueEntity("username")
+ * @Vich\Uploadable
  */
-class User implements UserInterface
+class User implements UserInterface, \Serializable
 {
     /**
      * @var int
@@ -69,9 +72,23 @@ class User implements UserInterface
     private $createdAt;
 
     /**
-     * @ORM\Column(name="avatar", type="string", length=255, nullable=true, options={"default" : "https://blink.la/img/default_avatar.jpeg"})
+     * @var \DateTime $createdAt
+     *
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
+     * @Assert\DateTime()
      */
-    protected $avatar="https://blink.la/img/default_avatar.jpeg";
+    private $updatedAt;
+
+    /**
+     * @ORM\Column(name="avatar", type="string", length=255, nullable=true, options={"default" : "/images/base/avatar.png"})
+     */
+    protected $avatar="avatar.png";
+
+    /**
+     * @Vich\UploadableField(mapping="user_avatar", fileNameProperty="avatar")
+     */
+    private $imageFile;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Blog\Post", mappedBy="user")
@@ -122,6 +139,25 @@ class User implements UserInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+
+        if ($image) {
+            $this->updatedAt = new \DateTime('now');
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
     }
 
     /**
@@ -203,8 +239,6 @@ class User implements UserInterface
         $this->posts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
     }
-
-
     /**
      * Set avatar
      *
@@ -400,5 +434,55 @@ class User implements UserInterface
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->nickname,
+            $this->username,
+            $this->password,
+            // see section on salt below
+             $this->salt,
+        ));
+    }
+
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->nickname,
+            $this->username,
+            $this->password,
+            // see section on salt below
+             $this->salt
+            ) = unserialize($serialized);
+    }
+
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return User
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }
