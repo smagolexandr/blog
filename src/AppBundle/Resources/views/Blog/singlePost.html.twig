@@ -38,11 +38,11 @@
     <hr>
     <!-- Post Tags -->
     <div>
-        {% for tag in post.tags %}
-            <a class="label label-primary" href="{{ path('homepage', {'tag':tag.name}) }}">
-                {{ tag.name }}
-            </a>
-        {% endfor %}
+        <ul class="tags">
+            {% for tag in post.tags %}
+                <li><a href="{{ path('homepage', {'tag':tag.name}) }}" class="tag">{{ tag.name }}</a></li>
+            {% endfor %}
+        </ul>
     </div>
     <hr>
 
@@ -87,6 +87,7 @@
                         {attr : {onsubmit: 'return confirm("Вы действительно хотите удалить комментарий?");' , 'style':'display:inline;'}}) }}
                         {{ form_widget(deleteForm[comment.id].submit) }}
                         {{ form_end(deleteForm[comment.id]) }}
+                        <a href="{{ path('blog_comment_edit', {'id':comment.id}) }}" class="btn btn-xs btn-primary pull-right">Edit</a>
                     {% endif %}
                     </small>
                 </h4>

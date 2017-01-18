@@ -8,11 +8,11 @@
             <h1>{{ post.title }}
                     <small style="float:right;">
                         {% if deleteForm[post.id] is defined %}
-                        <a href="{{ path('blog_post_edit', {'id':post.id}) }}" class="btn btn-xs btn-primary">edit</a>
+                        <a href="{{ path('blog_post_edit', {'id':post.id}) }}" class="btn btn-xs btn-primary">Edit</a>
                         <button class="btn btn-xs btn-danger hidden">
                         {{ form_start(deleteForm[post.id],
                         {attr : {onsubmit: 'return confirm("Вы действительно хотите удалить пост?");' }}) }}
-                            {{ form_widget(deleteForm[post.id].submit, {'label':'delete'}) }}
+                            {{ form_widget(deleteForm[post.id].submit, {'label':'Delete'}) }}
                             {{ form_end(deleteForm[post.id]) }}
                         </button>
                         {% endif %}
