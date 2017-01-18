@@ -16,7 +16,7 @@
                                 {{ comment.post.title }}
                             </a>
                            <a href="{{ path('comment_delete',{'id':comment.id}) }}" class="pull-right btn-box-tool"><i class="fa fa-times"></i></a>
-                        {#<a href="{{ path('blog_post_edit',{'id':post.id}) }}" class="pull-right btn-box-tool"><i class="fa fa-pencil"></i></a>#}
+                        <a href="{{ path('blog_comment_edit',{'id':comment.id}) }}" class="pull-right btn-box-tool"><i class="fa fa-pencil"></i></a>
                                                             </span>
                     <span class="description">{{ comment.createdAt | date("d/m/Y  H:i")  }}
                         {% if comment.approved %}

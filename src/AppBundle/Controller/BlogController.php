@@ -191,7 +191,7 @@ class BlogController extends Controller
 
 
     /**
-     * @Route("/edit/{id}", name="blog_post_edit")
+     * @Route("post/{id}/edit/", name="blog_post_edit")
      * @Template("AppBundle:Blog:edit.html.twig")
      */
     public function editPostAction(Request $request, Post $post)
@@ -263,6 +263,38 @@ class BlogController extends Controller
     }
 
     /**
+     * @Route("comment/{id}/edit/", name="blog_comment_edit")
+     * @Template("AppBundle:Blog:commentEdit.html.twig")
+     */
+    public function editCommentAction(Request $request, Comment $comment)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+            $post = $em->getRepository('AppBundle\Entity\Blog\Post')->find($comment->getPost()->getId());
+        if($this->isGranted('EDIT', $post)){
+            $form = $this->createForm('AppBundle\Form\Blog\CommentType', $comment)
+                ->add('Save', SubmitType::class, array(
+                    'attr' => array('class' => 'btn btn-success center-btn')
+                ));
+
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                $comment->setApproved(false);
+                $em->persist($comment);
+                $em->flush();
+                $url = $this->generateUrl('single_post', ['slug'=>$post->getSlug()] );
+                return new RedirectResponse($url);
+            }
+            return [
+                'post' => $post,
+                'form' => $form->createView()
+            ];
+        } else {
+            throw $this->createAccessDeniedException('Access denied.');
+        }
+    }
+    /**
      * @param Comment $comment
      * @return \Symfony\Component\Form\FormInterface
      */
@@ -271,8 +303,8 @@ class BlogController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('comment_delete', array('id' => $comment->getId())))
             ->add('submit', SubmitType::class, [
-                'label' => "Удалить",
-                'attr' => ['class' => 'btn btn-xs btn-danger']
+                'label' => "Delete",
+                'attr' => ['class' => 'btn btn-xs btn-danger pull-right']
             ])
             ->getForm();
     }
